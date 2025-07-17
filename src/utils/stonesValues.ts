@@ -132,6 +132,11 @@ export function calculateStoneValue(
   grade?: string,
   evolution?: string | number
 ): number {
+  // Check if it's an exclusive card (no stones value)
+  if (!advancement || advancement.toLowerCase() === 'exclusive' || advancement.toLowerCase() === 'exclu') {
+    return 0;
+  }
+  
   // Normalize inputs - handle uppercase values from API
   const normalizedFaction = (faction || 'Rift').toLowerCase()
     .replace('arkhante', 'Arkhante')

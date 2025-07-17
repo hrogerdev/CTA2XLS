@@ -204,6 +204,8 @@ export function NftTable({ nfts }: NftTableProps) {
                       <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         getMetadataValue(nft.metadata, 'advancement').toLowerCase() === 'combo' ? 'bg-red-100 text-red-800' :
                         getMetadataValue(nft.metadata, 'advancement').toLowerCase() === 'alternative' ? 'bg-indigo-100 text-indigo-800' :
+                        getMetadataValue(nft.metadata, 'advancement').toLowerCase() === 'exclusive' || 
+                        getMetadataValue(nft.metadata, 'advancement').toLowerCase() === 'exclu' ? 'bg-black text-white' :
                         'bg-gray-100 text-gray-800'
                       }`}>
                         {getMetadataValue(nft.metadata, 'advancement')}
