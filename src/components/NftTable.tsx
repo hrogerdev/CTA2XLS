@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ImxNft } from '../types'
 import * as XLSX from 'xlsx'
+import { calculateStoneValue } from '../utils/stonesValues'
 
 interface NftTableProps {
   nfts: ImxNft[]
@@ -31,24 +32,50 @@ function getMetadataValue(metadata: any, key: string): string {
 }
 
 export function NftTable({ nfts }: NftTableProps) {
+  // Calculate total stones value
+  const totalStones = nfts.reduce((total, nft) => {
+    const stoneValue = calculateStoneValue(
+      getMetadataValue(nft.metadata, 'faction'),
+      getMetadataValue(nft.metadata, 'rarity'),
+      getMetadataValue(nft.metadata, 'foil'),
+      getMetadataValue(nft.metadata, 'advancement'),
+      getMetadataValue(nft.metadata, 'grade'),
+      getMetadataValue(nft.metadata, 'evolution')
+    );
+    return total + stoneValue;
+  }, 0);
+
   const exportToExcel = () => {
-    const data = nfts.map(nft => ({
-      'Token ID': nft.token_id,
-      'Name': nft.name || 'N/A',
-      'Numbering': getMetadataValue(nft.metadata, 'numbering'),
-      'Rarity': getMetadataValue(nft.metadata, 'rarity'),
-      'Faction': getMetadataValue(nft.metadata, 'faction'),
-      'Element': getMetadataValue(nft.metadata, 'element'),
-      'Rank': getMetadataValue(nft.metadata, 'rank'),
-      'Grade': getMetadataValue(nft.metadata, 'grade'),
-      'Foil': getMetadataValue(nft.metadata, 'foil'),
-      'Evolution': getMetadataValue(nft.metadata, 'evolution'),
-      'Description': nft.description || 'N/A',
-      'Contract Address': nft.token_address,
-      'Status': nft.status,
-      'Created At': nft.created_at || 'N/A',
-      'URI': nft.uri || 'N/A'
-    }))
+    const data = nfts.map(nft => {
+      const stoneValue = calculateStoneValue(
+        getMetadataValue(nft.metadata, 'faction'),
+        getMetadataValue(nft.metadata, 'rarity'),
+        getMetadataValue(nft.metadata, 'foil'),
+        getMetadataValue(nft.metadata, 'advancement'),
+        getMetadataValue(nft.metadata, 'grade'),
+        getMetadataValue(nft.metadata, 'evolution')
+      );
+      
+      return {
+        'Token ID': nft.token_id,
+        'Name': nft.name || 'N/A',
+        'Numbering': getMetadataValue(nft.metadata, 'numbering'),
+        'Rarity': getMetadataValue(nft.metadata, 'rarity'),
+        'Faction': getMetadataValue(nft.metadata, 'faction'),
+        'Element': getMetadataValue(nft.metadata, 'element'),
+        'Rank': getMetadataValue(nft.metadata, 'rank'),
+        'Grade': getMetadataValue(nft.metadata, 'grade'),
+        'Advancement': getMetadataValue(nft.metadata, 'advancement'),
+        'Evolution': getMetadataValue(nft.metadata, 'evolution'),
+        'Foil': getMetadataValue(nft.metadata, 'foil'),
+        'Stone Value': stoneValue,
+        'Description': nft.description || 'N/A',
+        'Contract Address': nft.token_address,
+        'Status': nft.status,
+        'Created At': nft.created_at || 'N/A',
+        'URI': nft.uri || 'N/A'
+      };
+    })
 
     const ws = XLSX.utils.json_to_sheet(data)
     const wb = XLSX.utils.book_new()
@@ -70,9 +97,14 @@ export function NftTable({ nfts }: NftTableProps) {
       className="w-full max-w-6xl mx-auto mt-8"
     >
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-xl font-bold text-gray-800">
-          Found {nfts.length} Cross The Ages NFTs
-        </h2>
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">
+            Found {nfts.length} Cross The Ages NFTs
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Total value: <span className="font-semibold text-purple-600">{totalStones.toLocaleString()} stones</span>
+          </p>
+        </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -113,7 +145,13 @@ export function NftTable({ nfts }: NftTableProps) {
                   Grade
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Advancement
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   Foil
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Stones
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   Status
@@ -164,12 +202,31 @@ export function NftTable({ nfts }: NftTableProps) {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm">
                       <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        getMetadataValue(nft.metadata, 'advancement').toLowerCase() === 'combo' ? 'bg-red-100 text-red-800' :
+                        getMetadataValue(nft.metadata, 'advancement').toLowerCase() === 'alternative' ? 'bg-indigo-100 text-indigo-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {getMetadataValue(nft.metadata, 'advancement')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm">
+                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         getMetadataValue(nft.metadata, 'foil').toLowerCase() === 'true' || 
                         getMetadataValue(nft.metadata, 'foil').toLowerCase() === 'yes' ? 
                         'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
                       }`}>
                         {getMetadataValue(nft.metadata, 'foil')}
                       </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-purple-600">
+                      {calculateStoneValue(
+                        getMetadataValue(nft.metadata, 'faction'),
+                        getMetadataValue(nft.metadata, 'rarity'),
+                        getMetadataValue(nft.metadata, 'foil'),
+                        getMetadataValue(nft.metadata, 'advancement'),
+                        getMetadataValue(nft.metadata, 'grade'),
+                        getMetadataValue(nft.metadata, 'evolution')
+                      )}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                       <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
