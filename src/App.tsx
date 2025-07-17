@@ -126,7 +126,7 @@ export default function App() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            CTA to XLS
+            CTA to XLS 🚀
           </h1>
           <p className="text-lg text-gray-600">
             Parce que rien ne dit "j'ai réussi" comme un fichier Excel de tes JPEGs
