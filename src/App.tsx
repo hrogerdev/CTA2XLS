@@ -131,9 +131,6 @@ export default function App() {
           <p className="text-lg text-gray-600">
             Parce que rien ne dit "j'ai réussi" comme un fichier Excel de tes JPEGs
           </p>
-          <p className="text-sm text-gray-400 mt-2">
-            On transforme tes cartons numériques en or de tableur depuis 2024
-          </p>
         </motion.header>
 
         <AddressForm onSubmit={setWalletAddress} isLoading={loading} />

@@ -309,14 +309,12 @@ function VideoEditingScam() {
           </p>
           
           <div className="bg-black bg-opacity-50 rounded-lg p-3 mb-4">
-            <p className="font-bold mb-2">✨ Services Premium :</p>
-            <ul className="text-sm space-y-1 text-left">
-              <li>• Effets Windows Movie Maker 2003</li>
-              <li>• Transitions PowerPoint incluses</li>
-              <li>• Musique libre de droits (Darude - Sandstorm)</li>
-              <li>• Export en 240p pour économiser la bande passante</li>
-              <li>• Filigrane "UNREGISTERED HYPERCAM 2" offert</li>
-            </ul>
+            <div className="inline-block bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse mb-2">
+              🏆 EXPERT CERTIFIÉ 🏆
+            </div>
+            <p className="text-lg">
+              Montage professionnel par des vrais pros du métier
+            </p>
           </div>
           
           <motion.button
