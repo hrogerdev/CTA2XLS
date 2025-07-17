@@ -201,7 +201,7 @@ export default function App() {
             <p>* Mais au moins t'auras un joli tableur</p>
           </motion.div>
 
-          <FakeAdPlaceholder />
+          <FakeAdPlaceholder type="elpatron" />
         </motion.div>
 
         <FakeAdPlaceholder type="landdrop" />

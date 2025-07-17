@@ -331,6 +331,67 @@ function GrandMarabout() {
   )
 }
 
+function ElPatronVideo() {
+  const handleClick = () => {
+    window.open('https://www.crosstheages.com/fr-fr/news/cta/token-generation-event/', '_blank')
+  }
+  
+  return (
+    <aside id="fake-ad-elpatron" className="max-w-[480px] mx-auto my-8">
+      <div 
+        className="bg-black rounded-lg overflow-hidden relative cursor-pointer group"
+        onClick={handleClick}
+      >
+        <div className="relative">
+          {/* Blurred thumbnail */}
+          <div className="aspect-video relative overflow-hidden">
+            <div 
+              className="absolute inset-0 bg-cover bg-center filter blur-xl"
+              style={{
+                backgroundImage: 'url(https://via.placeholder.com/640x360/1a1a1a/ffffff?text=CENSORED)',
+                filter: 'blur(20px)'
+              }}
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-50" />
+            
+            {/* Play button overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                className="bg-red-600 rounded-full w-20 h-20 flex items-center justify-center group-hover:bg-red-700 transition-colors"
+              >
+                <div className="w-0 h-0 border-l-[30px] border-l-white border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
+              </motion.div>
+            </div>
+            
+            {/* Video info overlay */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+              <div className="text-white">
+                <h3 className="text-lg font-bold mb-1">Il Gang-Bang toute une communauté !</h3>
+                <div className="flex items-center gap-3 text-sm text-gray-300">
+                  <span>El Patron</span>
+                  <span>•</span>
+                  <span>2.3M vues</span>
+                  <span>•</span>
+                  <span>Il y a 2 heures</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Duration badge */}
+            <div className="absolute bottom-4 right-4 bg-black bg-opacity-80 text-white px-2 py-1 rounded text-sm">
+              42:69
+            </div>
+          </div>
+        </div>
+        
+        {/* Hover effect */}
+        <div className="absolute inset-0 bg-red-600 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
+      </div>
+    </aside>
+  )
+}
+
 function VideoEditingScam() {
   const [glitch, setGlitch] = useState(false)
   
@@ -404,7 +465,8 @@ export function FakeAdPlaceholder({ type }: { type?: string }) {
     landdrop: EternalLandDrop,
     penimaxi: Penimaxi,
     marabout: GrandMarabout,
-    video: VideoEditingScam
+    video: VideoEditingScam,
+    elpatron: ElPatronVideo
   }
   
   if (type && ads[type as keyof typeof ads]) {
