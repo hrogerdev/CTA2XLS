@@ -5,24 +5,25 @@ interface ProcessingAnimationProps {
   nftCount: number
   totalStones: number
   onComplete: () => void
+  isLoading?: boolean
 }
 
 const sarcasticMessages = [
-  "Oh wow, another wallet to check... thrilling 🙄",
-  "Calculating your virtual cardboard value... 📦",
-  "Converting JPEGs to Excel cells... revolutionary! 🚀",
-  "Summoning the blockchain spirits... 👻",
-  "Asking IMX nicely for your precious cards... 🎴",
-  "Counting pixels one by one... 🔍",
-  "Translating ape language to Excel... 🦍",
-  "Your NFTs are probably worth less than this Excel file... 💸",
-  "Processing... just like your therapist 🛋️",
-  "Making your accountant cry... 😢",
-  "Converting hopium to stones... ⚗️",
-  "Ctrl+C, Ctrl+V your way to riches... 💰"
+  "Oh wow, encore un wallet à vérifier... passionnant 🙄",
+  "Je calcule la valeur de tes cartons virtuels... 📦",
+  "Conversion de JPEGs en cellules Excel... révolutionnaire ! 🚀",
+  "J'invoque les esprits de la blockchain... 👻",
+  "Je demande gentiment à IMX tes précieuses cartes... 🎴",
+  "Je compte les pixels un par un... 🔍",
+  "Traduction du langage singe vers Excel... 🦍",
+  "Tes NFTs valent probablement moins que ce fichier Excel... 💸",
+  "Traitement en cours... comme chez ton psy 🛋️",
+  "Je fais pleurer ton comptable... 😢",
+  "Conversion d'hopium en stones... ⚗️",
+  "Ctrl+C, Ctrl+V vers la richesse... 💰"
 ]
 
-export function ProcessingAnimation({ nftCount, totalStones, onComplete }: ProcessingAnimationProps) {
+export function ProcessingAnimation({ nftCount, totalStones, onComplete, isLoading = false }: ProcessingAnimationProps) {
   const [currentMessage, setCurrentMessage] = useState(0)
   const [progress, setProgress] = useState(0)
 
@@ -33,12 +34,17 @@ export function ProcessingAnimation({ nftCount, totalStones, onComplete }: Proce
 
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 100) {
+        if (!isLoading && prev >= 100) {
           clearInterval(progressInterval)
           clearInterval(messageInterval)
           setTimeout(onComplete, 500)
           return 100
         }
+        if (isLoading) {
+          // Slower progress while loading
+          return Math.min(prev + Math.random() * 5, 90)
+        }
+        // Faster progress when done loading
         return prev + Math.random() * 15
       })
     }, 300)
@@ -47,7 +53,7 @@ export function ProcessingAnimation({ nftCount, totalStones, onComplete }: Proce
       clearInterval(messageInterval)
       clearInterval(progressInterval)
     }
-  }, [onComplete])
+  }, [onComplete, isLoading])
 
   return (
     <motion.div
@@ -69,7 +75,7 @@ export function ProcessingAnimation({ nftCount, totalStones, onComplete }: Proce
 
         <div className="space-y-2">
           <h3 className="text-2xl font-bold text-white">
-            Generating Your Precious Excel
+            Génération de ton précieux Excel
           </h3>
           <motion.p
             key={currentMessage}
@@ -92,30 +98,36 @@ export function ProcessingAnimation({ nftCount, totalStones, onComplete }: Proce
             />
           </div>
           <p className="text-sm text-gray-500">
-            {Math.round(progress)}% - {progress < 100 ? 'Still cooking...' : 'Ready to serve! 🍽️'}
+            {Math.round(progress)}% - {progress < 100 ? 'Ça mijote...' : 'C\'est prêt ! 🍽️'}
           </p>
         </div>
 
-        {nftCount > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="text-sm text-gray-400 space-y-1"
-          >
-            <p>Found {nftCount} digital dust collectors</p>
-            <p className="text-purple-400 font-semibold">
-              Total: {totalStones.toLocaleString()} magic internet stones 💎
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-sm text-gray-400 space-y-1"
+        >
+          {isLoading ? (
+            <p className="text-yellow-400">
+              NFTs récupérés : {nftCount} et ça continue...
             </p>
-          </motion.div>
-        )}
+          ) : (
+            <>
+              <p>J'ai trouvé {nftCount} ramasse-poussières numériques</p>
+              <p className="text-purple-400 font-semibold">
+                Total : {totalStones.toLocaleString()} cailloux magiques d'internet 💎
+              </p>
+            </>
+          )}
+        </motion.div>
 
         <motion.div
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 2, repeat: Infinity }}
           className="text-xs text-gray-600"
         >
-          Pro tip: These stones won't help you in real life
+          Astuce de pro : Ces stones ne t'aideront pas dans la vraie vie
         </motion.div>
       </div>
     </motion.div>

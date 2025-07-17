@@ -30,7 +30,6 @@ function getMetadataValue(metadata: any, key: string): string {
 export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showProcessing, setShowProcessing] = useState(false)
-  const [konami, setKonami] = useState(0)
   const { nfts, loading, error } = useImxNfts(walletAddress)
 
   // Calculate total stones
@@ -46,26 +45,6 @@ export default function App() {
     return total + stoneValue;
   }, 0);
 
-  // Easter egg: Konami code
-  useEffect(() => {
-    const sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let current = 0;
-
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === sequence[current]) {
-        current++;
-        if (current === sequence.length) {
-          setKonami(prev => prev + 1);
-          current = 0;
-        }
-      } else {
-        current = 0;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
 
   // Auto download when NFTs are loaded
   useEffect(() => {
@@ -112,12 +91,12 @@ export default function App() {
     // Add summary sheet
     const summary = XLSX.utils.json_to_sheet([{
       'Total NFTs': nfts.length,
-      'Total Stone Value': totalStones,
-      'Wallet Address': walletAddress,
-      'Generated Date': new Date().toLocaleString(),
-      'Reality Check': 'These are still just JPEGs'
+      'Valeur Totale en Stones': totalStones,
+      'Adresse Wallet': walletAddress,
+      'Date de Génération': new Date().toLocaleString('fr-FR'),
+      'Rappel à la réalité': 'Ce ne sont toujours que des JPEGs'
     }]);
-    XLSX.utils.book_append_sheet(wb, summary, 'Summary');
+    XLSX.utils.book_append_sheet(wb, summary, 'Résumé');
     
     const fileName = `cta-nfts-${walletAddress?.slice(0, 8)}-${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
@@ -127,13 +106,14 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${konami > 0 ? 'rainbow-bg' : ''}`}>
+    <div className="min-h-screen bg-gray-50">
       <AnimatePresence>
         {showProcessing && (
           <ProcessingAnimation
             nftCount={nfts.length}
             totalStones={totalStones}
             onComplete={generateExcel}
+            isLoading={loading}
           />
         )}
       </AnimatePresence>
@@ -146,13 +126,13 @@ export default function App() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            CTA to XLS {konami > 0 && '🌈'}
+            CTA to XLS
           </h1>
           <p className="text-lg text-gray-600">
-            Because nothing says "I made it" like an Excel file of your JPEGs
+            Parce que rien ne dit "j'ai réussi" comme un fichier Excel de tes JPEGs
           </p>
           <p className="text-sm text-gray-400 mt-2">
-            Turning your digital cardboard into spreadsheet gold since 2024
+            On transforme tes cartons numériques en or de tableur depuis 2024
           </p>
         </motion.header>
 
@@ -166,9 +146,9 @@ export default function App() {
             animate={{ opacity: 1 }}
             className="max-w-2xl mx-auto mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"
           >
-            <p className="font-medium">Oopsie! 🤡</p>
+            <p className="font-medium">Oups ! 🤡</p>
             <p>{error}</p>
-            <p className="text-sm mt-2">Maybe try a real wallet address next time?</p>
+            <p className="text-sm mt-2">Essaie peut-être avec une vraie adresse wallet la prochaine fois ?</p>
           </motion.div>
         )}
 
@@ -179,35 +159,35 @@ export default function App() {
           className="mt-16 space-y-8"
         >
           <div className="text-center space-y-2">
-            <h2 className="text-2xl font-bold text-gray-800">How it works (for smooth brains)</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Comment ça marche (pour les cerveaux lisses)</h2>
             <div className="max-w-2xl mx-auto space-y-4 mt-6">
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 className="bg-white p-4 rounded-lg shadow-md"
               >
                 <span className="text-3xl mr-3">1️⃣</span>
-                <span className="text-gray-700">Paste your wallet address (the long scary number)</span>
+                <span className="text-gray-700">Colle ton adresse wallet (le long truc qui fait peur)</span>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 className="bg-white p-4 rounded-lg shadow-md"
               >
                 <span className="text-3xl mr-3">2️⃣</span>
-                <span className="text-gray-700">Click the shiny button (you can do it!)</span>
+                <span className="text-gray-700">Clique sur le bouton brillant (tu peux le faire !)</span>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 className="bg-white p-4 rounded-lg shadow-md"
               >
                 <span className="text-3xl mr-3">3️⃣</span>
-                <span className="text-gray-700">Get your Excel file (wow, such technology!)</span>
+                <span className="text-gray-700">Récupère ton fichier Excel (wow, quelle technologie !)</span>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 className="bg-white p-4 rounded-lg shadow-md"
               >
                 <span className="text-3xl mr-3">4️⃣</span>
-                <span className="text-gray-700">Cry over your "investments" 😭</span>
+                <span className="text-gray-700">Pleure sur tes "investissements" 😭</span>
               </motion.div>
             </div>
           </div>
@@ -218,10 +198,10 @@ export default function App() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
           >
-            <p>* Not financial advice (obviously)</p>
-            <p>* Your NFTs are probably worthless</p>
-            <p>* This Excel file won't make them worth more</p>
-            <p>* But at least you'll have a nice spreadsheet</p>
+            <p>* Pas un conseil financier (évidemment)</p>
+            <p>* Tes NFTs ne valent probablement rien</p>
+            <p>* Ce fichier Excel ne les rendra pas plus précieux</p>
+            <p>* Mais au moins t'auras un joli tableur</p>
           </motion.div>
         </motion.div>
 
@@ -231,29 +211,13 @@ export default function App() {
           transition={{ delay: 0.8 }}
           className="mt-16 text-center text-sm text-gray-500"
         >
-          <p>Made with 🤡 for degens who need spreadsheets</p>
+          <p>Fait avec 🤡 pour les degens qui ont besoin de tableurs</p>
           <p className="mt-2">
-            Contract: 0xa04bcac09a3ca810796c9e3deee8fdc8c9807166
-          </p>
-          <p className="text-xs mt-4 text-gray-400">
-            {konami > 0 ? '🎮 Konami code activated! You found the rainbow mode!' : 'Try the Konami code... if you remember it'}
+            Contrat : 0xa04bcac09a3ca810796c9e3deee8fdc8c9807166
           </p>
         </motion.footer>
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        .rainbow-bg {
-          animation: rainbow 10s ease infinite;
-          background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
-          background-size: 400% 400%;
-        }
-        
-        @keyframes rainbow {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}} />
     </div>
   )
 }
