@@ -42,7 +42,7 @@ function WindshieldAcademy() {
             ⭐ Formation 3 JOURS ⭐
           </div>
           <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Impact, sans-serif' }}>
-            DEVENEZ PARBRIGISTE PRO EN 72H !
+            LAVEUR DE PARE-BRISE PRO EN 72H !
           </h3>
           <p className="text-sm mb-4">
             Décrochez votre <em>Squeegee Master Badge</em> et frottez plus vite que la lumière. 
