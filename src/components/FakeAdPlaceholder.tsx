@@ -332,9 +332,6 @@ function VideoEditingScam() {
           </p>
         </div>
       </motion.div>
-      <p className="text-[10px] text-gray-500 text-center mt-1">
-        Parodie, non contractuel - Publicité parodique, aucun produit réel
-      </p>
     </aside>
   )
 }

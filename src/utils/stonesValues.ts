@@ -143,6 +143,11 @@ export function calculateStoneValue(
     .replace('mantris', 'Mantris')
     .replace('rift', 'Rift');
   
+  // Check if it's an exclusive rarity (also no stones value)
+  if (rarity && (rarity.toLowerCase() === 'exclusive' || rarity.toLowerCase() === 'exclu')) {
+    return 0;
+  }
+  
   // Normalize rarity - API returns UPPERCASE
   const rarityMap: Record<string, string> = {
     'common': 'Common',
