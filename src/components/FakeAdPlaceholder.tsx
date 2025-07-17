@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 
 function WindshieldAcademy() {
   const [wipePosition, setWipePosition] = useState(0)
+  const [showClosed, setShowClosed] = useState(false)
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -11,11 +12,43 @@ function WindshieldAcademy() {
     return () => clearInterval(interval)
   }, [])
 
+  if (showClosed) {
+    return (
+      <aside id="fake-ad-windshield" className="max-w-[480px] mx-auto my-8 relative overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg p-8 relative text-center"
+        >
+          <div className="text-white">
+            <div className="text-6xl mb-4">🚧</div>
+            <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'Impact, sans-serif' }}>
+              FORMATION COMPLÈTE !
+            </h3>
+            <p className="text-lg mb-2">
+              Devant le succès de la formation, nous avons clôturé ses portes.
+            </p>
+            <p className="text-xl font-bold text-yellow-400 mb-4">
+              Revenez l'année prochaine !
+            </p>
+            <button
+              onClick={() => setShowClosed(false)}
+              className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500 transition-colors text-sm"
+            >
+              Retour
+            </button>
+          </div>
+        </motion.div>
+      </aside>
+    )
+  }
+  
   return (
     <aside id="fake-ad-windshield" className="max-w-[480px] mx-auto my-8 relative overflow-hidden">
       <motion.div 
-        className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg p-6 relative"
+        className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg p-6 relative cursor-pointer"
         whileHover={{ scale: 1.02 }}
+        onClick={() => setShowClosed(true)}
       >
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -48,13 +81,13 @@ function WindshieldAcademy() {
             Décrochez votre <em>Squeegee Master Badge</em> et frottez plus vite que la lumière. 
             Certification NFT incluse.
           </p>
-          <motion.button
+          <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-yellow-400 text-black font-bold px-6 py-3 rounded-full"
+            className="bg-yellow-400 text-black font-bold px-6 py-3 rounded-full inline-block"
           >
             Je passe la raclette ➜
-          </motion.button>
+          </motion.div>
           <div className="mt-4 text-xs opacity-70">
             Certifié par l'International Parbrigiste Institute™
           </div>
