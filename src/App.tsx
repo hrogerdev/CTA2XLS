@@ -190,17 +190,6 @@ export default function App() {
             </div>
           </div>
 
-          <motion.div
-            className="text-center text-xs text-gray-400 space-y-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            <p>* Pas un conseil financier (évidemment)</p>
-            <p>* Tes NFTs ne valent probablement rien</p>
-            <p>* Ce fichier Excel ne les rendra pas plus précieux</p>
-            <p>* Mais au moins t'auras un joli tableur</p>
-          </motion.div>
 
         </motion.div>
 
