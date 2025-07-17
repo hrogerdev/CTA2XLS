@@ -4,9 +4,6 @@ import * as XLSX from 'xlsx'
 
 interface NftTableProps {
   nfts: ImxNft[]
-  hasMore: boolean
-  onLoadMore: () => void
-  isLoading: boolean
 }
 
 // Helper function to extract metadata attributes
@@ -33,7 +30,7 @@ function getMetadataValue(metadata: any, key: string): string {
   return found ? metadata[found].toString() : 'N/A'
 }
 
-export function NftTable({ nfts, hasMore, onLoadMore, isLoading }: NftTableProps) {
+export function NftTable({ nfts }: NftTableProps) {
   const exportToExcel = () => {
     const data = nfts.map(nft => ({
       'Token ID': nft.token_id,

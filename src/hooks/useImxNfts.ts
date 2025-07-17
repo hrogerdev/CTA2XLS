@@ -32,10 +32,6 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
   const [nfts, setNfts] = useState<ImxNft[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [cursor, setCursor] = useState<string | null>(null)
-  const [hasMore, setHasMore] = useState(false)
-  const [notificationSent, setNotificationSent] = useState(false)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const fetchAllNfts = useCallback(async (address: string, currentCursor?: string, accumulator: ImxNft[] = []): Promise<{ nfts: ImxNft[], hasMore: boolean }> => {
     const params = new URLSearchParams({
@@ -92,8 +88,6 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
         console.warn('Failed to send completion notification:', e)
       }
 
-      setCursor(null)
-      setHasMore(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch NFTs')
     } finally {
@@ -101,14 +95,8 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
     }
   }, [fetchAllNfts])
 
-  const loadMore = useCallback(() => {
-    // Not needed anymore as we fetch all automatically
-  }, [])
-
   const reset = useCallback(() => {
     setNfts([])
-    setCursor(null)
-    setHasMore(false)
     setError(null)
   }, [])
 
@@ -124,8 +112,8 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
     nfts,
     loading,
     error,
-    hasMore,
-    loadMore,
+    hasMore: false,
+    loadMore: () => {},
     reset
   }
 }

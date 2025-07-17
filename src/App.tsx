@@ -8,7 +8,7 @@ import { useImxNfts } from './hooks/useImxNfts'
 
 export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
-  const { nfts, loading, error, hasMore, loadMore } = useImxNfts(walletAddress)
+  const { nfts, loading, error } = useImxNfts(walletAddress)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -61,12 +61,7 @@ export default function App() {
         )}
 
         {!loading && nfts.length > 0 && (
-          <NftTable
-            nfts={nfts}
-            hasMore={hasMore}
-            onLoadMore={loadMore}
-            isLoading={loading}
-          />
+          <NftTable nfts={nfts} />
         )}
 
         <motion.footer
