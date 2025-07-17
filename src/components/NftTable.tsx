@@ -9,16 +9,47 @@ interface NftTableProps {
   isLoading: boolean
 }
 
+// Helper function to extract metadata attributes
+function getMetadataValue(metadata: any, key: string): string {
+  if (!metadata) return 'N/A'
+  
+  // Check if metadata has attributes array (common format)
+  if (metadata.attributes && Array.isArray(metadata.attributes)) {
+    const attr = metadata.attributes.find((a: any) => 
+      a.trait_type?.toLowerCase() === key.toLowerCase() || 
+      a.key?.toLowerCase() === key.toLowerCase()
+    )
+    return attr?.value?.toString() || 'N/A'
+  }
+  
+  // Check direct properties
+  if (metadata[key] !== undefined) {
+    return metadata[key].toString()
+  }
+  
+  // Check various case variations
+  const lowerKey = key.toLowerCase()
+  const found = Object.keys(metadata).find(k => k.toLowerCase() === lowerKey)
+  return found ? metadata[found].toString() : 'N/A'
+}
+
 export function NftTable({ nfts, hasMore, onLoadMore, isLoading }: NftTableProps) {
   const exportToExcel = () => {
     const data = nfts.map(nft => ({
       'Token ID': nft.token_id,
       'Name': nft.name || 'N/A',
+      'Numbering': getMetadataValue(nft.metadata, 'numbering'),
+      'Rarity': getMetadataValue(nft.metadata, 'rarity'),
+      'Faction': getMetadataValue(nft.metadata, 'faction'),
+      'Element': getMetadataValue(nft.metadata, 'element'),
+      'Rank': getMetadataValue(nft.metadata, 'rank'),
+      'Grade': getMetadataValue(nft.metadata, 'grade'),
+      'Foil': getMetadataValue(nft.metadata, 'foil'),
+      'Evolution': getMetadataValue(nft.metadata, 'evolution'),
       'Description': nft.description || 'N/A',
       'Contract Address': nft.token_address,
       'Status': nft.status,
       'Created At': nft.created_at || 'N/A',
-      'Updated At': nft.updated_at || 'N/A',
       'URI': nft.uri || 'N/A'
     }))
 
@@ -41,7 +72,7 @@ export function NftTable({ nfts, hasMore, onLoadMore, isLoading }: NftTableProps
       transition={{ duration: 0.5, delay: 0.2 }}
       className="w-full max-w-6xl mx-auto mt-8"
     >
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-bold text-gray-800">
           Found {nfts.length} Cross The Ages NFTs
         </h2>
@@ -60,16 +91,34 @@ export function NftTable({ nfts, hasMore, onLoadMore, isLoading }: NftTableProps
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   Token ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Description
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Numbering
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Rarity
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Faction
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Element
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Rank
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Grade
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Foil
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   Status
                 </th>
               </tr>
@@ -81,20 +130,52 @@ export function NftTable({ nfts, hasMore, onLoadMore, isLoading }: NftTableProps
                     key={`${nft.token_address}-${nft.token_id}`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    transition={{ duration: 0.3, delay: Math.min(index * 0.01, 0.5) }}
                     className="hover:bg-gray-50"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {nft.token_id}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                       {nft.name || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                      {nft.description || 'N/A'}
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {getMetadataValue(nft.metadata, 'numbering')}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    <td className="px-4 py-3 whitespace-nowrap text-sm">
+                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        getMetadataValue(nft.metadata, 'rarity').toLowerCase() === 'legendary' ? 'bg-purple-100 text-purple-800' :
+                        getMetadataValue(nft.metadata, 'rarity').toLowerCase() === 'epic' ? 'bg-orange-100 text-orange-800' :
+                        getMetadataValue(nft.metadata, 'rarity').toLowerCase() === 'rare' ? 'bg-blue-100 text-blue-800' :
+                        getMetadataValue(nft.metadata, 'rarity').toLowerCase() === 'uncommon' ? 'bg-green-100 text-green-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {getMetadataValue(nft.metadata, 'rarity')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {getMetadataValue(nft.metadata, 'faction')}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {getMetadataValue(nft.metadata, 'element')}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {getMetadataValue(nft.metadata, 'rank')}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {getMetadataValue(nft.metadata, 'grade')}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm">
+                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        getMetadataValue(nft.metadata, 'foil').toLowerCase() === 'true' || 
+                        getMetadataValue(nft.metadata, 'foil').toLowerCase() === 'yes' ? 
+                        'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {getMetadataValue(nft.metadata, 'foil')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         nft.status === 'imx' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                       }`}>
                         {nft.status}
