@@ -60,15 +60,38 @@ function WindshieldAcademy() {
           </div>
         </div>
       </motion.div>
-      <p className="text-[10px] text-gray-500 text-center mt-1">
-        Parodie, non contractuel - Publicité parodique, aucun produit réel
-      </p>
     </aside>
   )
 }
 
 function EternalLandDrop() {
   const [showTumbleweed, setShowTumbleweed] = useState(false)
+  const [viewerCount, setViewerCount] = useState(12847)
+  const [streamTime, setStreamTime] = useState({ hours: 1234567, minutes: 42, seconds: 19 })
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Update viewer count randomly
+      setViewerCount(prev => prev + Math.floor(Math.random() * 10) - 5)
+      
+      // Update stream time
+      setStreamTime(prev => {
+        let { hours, minutes, seconds } = prev
+        seconds++
+        if (seconds >= 60) {
+          seconds = 0
+          minutes++
+          if (minutes >= 60) {
+            minutes = 0
+            hours++
+          }
+        }
+        return { hours, minutes, seconds }
+      })
+    }, 1000)
+    
+    return () => clearInterval(interval)
+  }, [])
   
   return (
     <aside id="fake-ad-landdrop" className="max-w-[480px] mx-auto my-8">
@@ -79,8 +102,13 @@ function EternalLandDrop() {
             onClick={() => setShowTumbleweed(true)}
           >
             <div className="bg-gray-800 p-4">
-              <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
-                ● LIVE
+              <div className="absolute top-4 right-4 flex items-center gap-2">
+                <div className="bg-red-600 text-white px-3 py-1 rounded text-sm font-bold flex items-center gap-1">
+                  <span className="animate-pulse">●</span> LIVE
+                </div>
+                <div className="bg-gray-900 bg-opacity-80 text-white px-2 py-1 rounded text-sm font-mono">
+                  👁 {viewerCount.toLocaleString()}
+                </div>
               </div>
               <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-80" />
@@ -90,7 +118,7 @@ function EternalLandDrop() {
                   </h3>
                   <p className="text-xl mb-2">EN DIRECT DEPUIS 2019</p>
                   <div className="text-4xl font-mono text-yellow-400">
-                    1 234 567h 42m 19s
+                    {streamTime.hours.toLocaleString()}h {streamTime.minutes.toString().padStart(2, '0')}m {streamTime.seconds.toString().padStart(2, '0')}s
                   </div>
                 </div>
               </div>
@@ -120,9 +148,6 @@ function EternalLandDrop() {
           </div>
         )}
       </div>
-      <p className="text-[10px] text-gray-500 text-center mt-1">
-        Parodie, non contractuel - Publicité parodique, aucun produit réel
-      </p>
     </aside>
   )
 }
@@ -175,9 +200,6 @@ function Penimaxi() {
           </div>
         </div>
       </motion.div>
-      <p className="text-[10px] text-gray-500 text-center mt-1">
-        Parodie, non contractuel - Publicité parodique, aucun produit réel
-      </p>
     </aside>
   )
 }
@@ -260,9 +282,6 @@ function GrandMarabout() {
           </div>
         </div>
       </div>
-      <p className="text-[10px] text-gray-500 text-center mt-1">
-        Parodie, non contractuel - Publicité parodique, aucun produit réel
-      </p>
     </aside>
   )
 }

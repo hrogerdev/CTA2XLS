@@ -135,8 +135,6 @@ export default function App() {
 
         <AddressForm onSubmit={setWalletAddress} isLoading={loading} />
 
-        <FakeAdPlaceholder type="video" />
-
         {error && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -155,6 +153,8 @@ export default function App() {
           transition={{ delay: 0.5 }}
           className="mt-16 space-y-8"
         >
+          <FakeAdPlaceholder type="video" />
+          
           <div className="text-center space-y-2">
             <h2 className="text-2xl font-bold text-gray-800">Comment ça marche (pour les cerveaux lisses)</h2>
             <div className="max-w-2xl mx-auto space-y-4 mt-6">
