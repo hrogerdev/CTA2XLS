@@ -78,7 +78,7 @@ function WindshieldAcademy() {
             LAVEUR DE PARE-BRISE PRO EN 72H !
           </h3>
           <p className="text-sm mb-4">
-            Décrochez votre <em>Squeegee Master Badge</em> et frottez plus vite que la lumière. 
+            Devenez riche en lustrant tout ce qui bouge.
             Certification NFT incluse.
           </p>
           <motion.div
