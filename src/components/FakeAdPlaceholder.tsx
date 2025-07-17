@@ -288,7 +288,7 @@ function Penimaxi() {
             className="bg-red-600 text-white font-bold px-6 py-3 rounded-full w-full"
             onClick={() => setShow404(true)}
           >
-            Je clique avant d'y penser
+            J'en profite
           </motion.button>
           <div className="mt-3 flex items-center justify-center text-xs text-gray-600">
             <span className="mr-2">🔒</span>
