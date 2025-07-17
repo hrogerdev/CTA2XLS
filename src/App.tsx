@@ -201,10 +201,17 @@ export default function App() {
             <p>* Mais au moins t'auras un joli tableur</p>
           </motion.div>
 
-          <FakeAdPlaceholder type="elpatron" />
         </motion.div>
 
-        <FakeAdPlaceholder type="landdrop" />
+        {/* Affichage de toutes les pubs */}
+        <div className="space-y-8">
+          <FakeAdPlaceholder type="windshield" />
+          <FakeAdPlaceholder type="landdrop" />
+          <FakeAdPlaceholder type="penimaxi" />
+          <FakeAdPlaceholder type="marabout" />
+          <FakeAdPlaceholder type="video" />
+          <FakeAdPlaceholder type="elpatron" />
+        </div>
 
         <motion.footer
           initial={{ opacity: 0 }}
