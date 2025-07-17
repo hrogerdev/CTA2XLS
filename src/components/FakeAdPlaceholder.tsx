@@ -252,7 +252,7 @@ function Penimaxi() {
         <div className="text-center">
           <div className="text-6xl mb-2">⬆️</div>
           <h3 className="text-2xl font-bold text-red-600 mb-2" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
-            AGRANDIS TON ÉPÉE DE +300%*
+            AGRANDIS TON MINTPASS DE +300%*
           </h3>
           <div className="bg-yellow-400 text-black font-bold py-2 px-4 rounded-full inline-block mb-3 transform -rotate-2">
             GARANTI*
