@@ -332,6 +332,37 @@ function GrandMarabout() {
 }
 
 function ElPatronVideo() {
+  const [streamTime, setStreamTime] = useState(() => {
+    // Calculer le temps écoulé depuis 1 an
+    const startDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 1);
+    const elapsed = Date.now() - startDate.getTime();
+    const hours = Math.floor(elapsed / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+    return { hours, minutes, seconds };
+  });
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStreamTime(prev => {
+        let { hours, minutes, seconds } = prev;
+        seconds++;
+        if (seconds >= 60) {
+          seconds = 0;
+          minutes++;
+          if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+          }
+        }
+        return { hours, minutes, seconds };
+      });
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
   const handleClick = () => {
     window.open('https://www.crosstheages.com/fr-fr/news/cta/token-generation-event/', '_blank')
   }
@@ -346,26 +377,46 @@ function ElPatronVideo() {
           {/* Blurred thumbnail */}
           <div className="aspect-video relative overflow-hidden">
             <div 
-              className="absolute inset-0 bg-cover bg-center filter blur-xl"
+              className="absolute inset-0 bg-gradient-to-br from-pink-400 via-red-400 to-purple-400"
               style={{
-                backgroundImage: 'url(https://via.placeholder.com/640x360/1a1a1a/ffffff?text=CENSORED)',
-                filter: 'blur(20px)'
+                filter: 'blur(30px)',
+                animation: 'pulse 3s ease-in-out infinite'
               }}
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50" />
+            <div className="absolute inset-0 bg-black bg-opacity-30" />
+            
+            {/* LIVE indicator and viewer count */}
+            <div className="absolute top-4 left-4 flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-red-600 px-3 py-1 rounded">
+                <motion.div
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="w-2 h-2 bg-white rounded-full"
+                />
+                <span className="text-white font-bold text-sm">LIVE</span>
+              </div>
+              <div className="bg-black bg-opacity-70 text-white px-3 py-1 rounded text-sm">
+                👁 100k spectateurs
+              </div>
+            </div>
+            
+            {/* Stream timer */}
+            <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded font-mono text-sm">
+              {streamTime.hours.toLocaleString()}:{streamTime.minutes.toString().padStart(2, '0')}:{streamTime.seconds.toString().padStart(2, '0')}
+            </div>
             
             {/* Play button overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                className="bg-red-600 rounded-full w-20 h-20 flex items-center justify-center group-hover:bg-red-700 transition-colors"
+                className="bg-white bg-opacity-90 rounded-full w-20 h-20 flex items-center justify-center group-hover:bg-opacity-100 transition-all shadow-xl"
               >
-                <div className="w-0 h-0 border-l-[30px] border-l-white border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
+                <div className="w-0 h-0 border-l-[30px] border-l-red-600 border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
               </motion.div>
             </div>
             
             {/* Video info overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
               <div className="text-white">
                 <h3 className="text-lg font-bold mb-1">Il Gang-Bang toute une communauté !</h3>
                 <div className="flex items-center gap-3 text-sm text-gray-300">
@@ -373,14 +424,9 @@ function ElPatronVideo() {
                   <span>•</span>
                   <span>2.3M vues</span>
                   <span>•</span>
-                  <span>Il y a 2 heures</span>
+                  <span>En direct</span>
                 </div>
               </div>
-            </div>
-            
-            {/* Duration badge */}
-            <div className="absolute bottom-4 right-4 bg-black bg-opacity-80 text-white px-2 py-1 rounded text-sm">
-              42:69
             </div>
           </div>
         </div>
