@@ -327,16 +327,18 @@ function GrandMarabout() {
           </div>
           
           <h3 className="text-3xl font-bold text-purple-800 mb-3" style={{ fontFamily: 'Impact, sans-serif' }}>
-            AMOUR PERDU ? RETOUR 24H GARANTI !
+            Monsieur N'GOLO
           </h3>
+          <p className="text-xl text-purple-700 mb-3 font-bold">Grand Marabout</p>
           
           <div className="bg-white rounded-lg p-3 mb-4 text-left">
-            <p className="font-bold text-purple-800 mb-2">Grand Marabout N'Golo résout :</p>
+            <p className="font-bold text-purple-800 mb-2">Spécialiste :</p>
             <ul className="text-sm space-y-1">
-              <li>• Ligature mystique</li>
-              <li>• Poudre de succès</li>
+              <li>• Retour de l'être aimé</li>
+              <li>• Chiffres du loto</li>
               <li>• Crypto-désenvoûtement</li>
-              <li>• Retour de l'être aimé en 24h</li>
+              <li>• Chance aux jeux</li>
+              <li>• Protection contre les FUD</li>
             </ul>
           </div>
           
