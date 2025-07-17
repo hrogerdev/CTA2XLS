@@ -35,7 +35,7 @@ export default function App() {
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
   
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50
     if (info.offset.x > swipeThreshold) {
       setCurrentAdIndex((prev) => (prev - 1 + adTypes.length) % adTypes.length)
