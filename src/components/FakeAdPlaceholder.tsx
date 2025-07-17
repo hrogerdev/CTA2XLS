@@ -143,16 +143,15 @@ function EternalLandDrop() {
                 </div>
               </div>
               
-              {/* Bottom ticker */}
-              <div className="absolute bottom-0 left-0 right-0 bg-red-600 py-2 overflow-hidden">
-                <motion.div
-                  animate={{ x: [0, -100 + '%'] }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                  className="whitespace-nowrap text-white text-sm font-bold"
+              {/* Watch button */}
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-red-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-red-700 transition-colors"
                 >
-                  🚨 BREAKING: Suivez la livraison des lands en direct ! • 
-                  🚨 BREAKING: Suivez la livraison des lands en direct ! • 
-                </motion.div>
+                  ▶️ Regarder maintenant
+                </motion.button>
               </div>
             </div>
           </div>
@@ -216,7 +215,7 @@ function Penimaxi() {
             GARANTI*
           </div>
           <p className="text-sm mb-4">
-            *Résultats non garantis, mais ta confiance oui.
+            *Résultats non garantis
           </p>
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -295,7 +294,6 @@ function GrandMarabout() {
               <li>• Poudre de succès</li>
               <li>• Crypto-désenvoûtement</li>
               <li>• Retour de l'être aimé en 24h</li>
-              <li>• Chance aux examens CTA</li>
             </ul>
           </div>
           
@@ -343,28 +341,15 @@ function ElPatronVideo() {
             />
             <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isHovered ? 'bg-opacity-10' : 'bg-opacity-40'}`} />
             
-            {/* Age warning overlay */}
-            {!isHovered && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-red-600 text-white px-6 py-4 rounded-lg text-center">
-                  <div className="text-4xl font-bold mb-2">18+</div>
-                  <div className="text-sm">Contenu réservé aux adultes</div>
-                </div>
-              </div>
-            )}
-            
-            {/* Play button overlay - only show on hover */}
-            {isHovered && (
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute inset-0 flex items-center justify-center"
+            {/* Play button overlay - always visible */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                className="bg-white bg-opacity-90 rounded-full w-20 h-20 flex items-center justify-center shadow-xl"
               >
-                <div className="bg-white bg-opacity-90 rounded-full w-20 h-20 flex items-center justify-center shadow-xl">
-                  <div className="w-0 h-0 border-l-[30px] border-l-red-600 border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
-                </div>
+                <div className="w-0 h-0 border-l-[30px] border-l-red-600 border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
               </motion.div>
-            )}
+            </div>
             
             {/* Video info overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
