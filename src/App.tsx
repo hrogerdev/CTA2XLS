@@ -138,7 +138,7 @@ export default function App() {
 
         <AddressForm onSubmit={setWalletAddress} isLoading={loading} />
 
-        <FakeAdPlaceholder />
+        <FakeAdPlaceholder type="video" />
 
         {error && (
           <motion.div
@@ -203,7 +203,11 @@ export default function App() {
             <p>* Ce fichier Excel ne les rendra pas plus précieux</p>
             <p>* Mais au moins t'auras un joli tableur</p>
           </motion.div>
+
+          <FakeAdPlaceholder />
         </motion.div>
+
+        <FakeAdPlaceholder type="landdrop" />
 
         <motion.footer
           initial={{ opacity: 0 }}
