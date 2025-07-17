@@ -10,7 +10,7 @@ interface ProcessingAnimationProps {
 
 const sarcasticMessages = [
   "Oh wow, encore un wallet à vérifier... passionnant 🙄",
-  "Je calcule la valeur de tes cartons virtuels... 📦",
+  "Pourquoi t'as été foutre toute cette merde sur une blockchain... 📦",
   "Conversion de JPEGs en cellules Excel... révolutionnaire ! 🚀",
   "J'invoque les esprits de la blockchain... 👻",
   "Je demande gentiment à IMX tes précieuses cartes... 🎴",
