@@ -26,6 +26,16 @@ const sarcasticMessages = [
 export function ProcessingAnimation({ nftCount, totalStones, onComplete, isLoading = false }: ProcessingAnimationProps) {
   const [currentMessage, setCurrentMessage] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [startTime] = useState(Date.now())
+  const [canComplete, setCanComplete] = useState(false)
+
+  // Ensure minimum 6 seconds duration
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCanComplete(true)
+    }, 6000)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const messageInterval = setInterval(() => {
@@ -34,26 +44,38 @@ export function ProcessingAnimation({ nftCount, totalStones, onComplete, isLoadi
 
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        if (!isLoading && prev >= 100) {
+        const elapsed = Date.now() - startTime
+        const minProgress = (elapsed / 6000) * 100 // Progress based on 6 seconds minimum
+        
+        if (!isLoading && canComplete && prev >= 100) {
           clearInterval(progressInterval)
           clearInterval(messageInterval)
           setTimeout(onComplete, 500)
           return 100
         }
+        
         if (isLoading) {
-          // Slower progress while loading
-          return Math.min(prev + Math.random() * 5, 90)
+          // Progress slowly while loading, but respect minimum time
+          const targetProgress = Math.min(minProgress, 85)
+          return Math.min(prev + Math.random() * 5, targetProgress)
         }
-        // Faster progress when done loading
-        return prev + Math.random() * 15
+        
+        // When done loading but not 6 seconds yet
+        if (!canComplete) {
+          const targetProgress = Math.min(minProgress, 95)
+          return Math.min(prev + Math.random() * 10, targetProgress)
+        }
+        
+        // Complete quickly after 6 seconds and loading done
+        return Math.min(prev + Math.random() * 20, 100)
       })
-    }, 300)
+    }, 200)
 
     return () => {
       clearInterval(messageInterval)
       clearInterval(progressInterval)
     }
-  }, [onComplete, isLoading])
+  }, [onComplete, isLoading, startTime, canComplete])
 
   return (
     <motion.div

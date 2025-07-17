@@ -46,12 +46,12 @@ export default function App() {
   }, 0);
 
 
-  // Auto download when NFTs are loaded
+  // Show processing animation when wallet is submitted
   useEffect(() => {
-    if (!loading && nfts.length > 0 && walletAddress) {
+    if (walletAddress && loading) {
       setShowProcessing(true);
     }
-  }, [loading, nfts.length, walletAddress]);
+  }, [walletAddress, loading]);
 
   const generateExcel = () => {
     const data = nfts.map(nft => {
