@@ -108,14 +108,14 @@ function multiplyValues(values: CollectionValues, multiplier: number): Collectio
 
 // Generate Mantris values (Rift × 2 for NonFoil, Rift × 4 for Foil)
 const MANTRIS_VALUES: CollectionValues = {
-  NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.NonFoil }, 2).NonFoil,
-  Foil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.NonFoil }, 4).NonFoil
+  NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.Foil }, 2).NonFoil,
+  Foil: multiplyValues({ NonFoil: RIFT_VALUES.Foil, Foil: RIFT_VALUES.Foil }, 2).NonFoil
 };
 
 // Generate Arkhante values (Rift × 3 for NonFoil, Rift × 6 for Foil)
 const ARKHANTE_VALUES: CollectionValues = {
-  NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.NonFoil }, 3).NonFoil,
-  Foil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.NonFoil }, 6).NonFoil
+  NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.Foil }, 3).NonFoil,
+  Foil: multiplyValues({ NonFoil: RIFT_VALUES.Foil, Foil: RIFT_VALUES.Foil }, 3).NonFoil
 };
 
 export const STONES_VALUES: Record<string, CollectionValues> = {
