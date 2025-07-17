@@ -50,7 +50,7 @@ export function ProcessingAnimation({ nftCount, totalStones, onComplete, isLoadi
         if (!isLoading && canComplete && prev >= 100) {
           clearInterval(progressInterval)
           clearInterval(messageInterval)
-          setTimeout(onComplete, 500)
+          setTimeout(onComplete, 3000) // Increased from 500ms to 3000ms
           return 100
         }
         
