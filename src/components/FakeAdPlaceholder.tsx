@@ -380,9 +380,43 @@ function GrandMarabout() {
 
 function ElPatronVideo() {
   const [isHovered, setIsHovered] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   
   const handleClick = () => {
-    window.open('https://www.crosstheages.com/fr-fr/news/cta/token-generation-event/', '_blank')
+    setShowWarning(true);
+  }
+  
+  if (showWarning) {
+    return (
+      <aside id="fake-ad-elpatron" className="max-w-[480px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gradient-to-br from-red-900 to-black rounded-lg p-8 text-center"
+        >
+          <div className="text-white">
+            <div className="text-6xl mb-4">🔞</div>
+            <h3 className="text-2xl font-bold mb-4">
+              Demi-tour Galac ! Faut être majeur
+            </h3>
+            <div className="space-y-3 mt-6">
+              <button
+                onClick={() => setShowWarning(false)}
+                className="w-full bg-gray-600 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-700 transition-colors"
+              >
+                Je suis galac
+              </button>
+              <button
+                onClick={() => window.open('https://www.crosstheages.com/fr-fr/news/cta/token-generation-event/', '_blank')}
+                className="w-full bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-colors"
+              >
+                Je suis majeur
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </aside>
+    )
   }
   
   return (
