@@ -172,14 +172,24 @@ function EternalLandDrop() {
             </div>
           </div>
         ) : (
-          <div className="aspect-video bg-gradient-to-b from-orange-200 to-yellow-100 flex items-center justify-center">
-            <motion.div
-              animate={{ x: [0, 400], rotate: [0, 360] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-              className="text-6xl"
+          <div className="relative bg-gradient-to-b from-orange-200 to-yellow-100 p-4">
+            <div className="text-center mb-4">
+              <h3 className="text-2xl font-bold text-gray-800">RÉSULTAT DE L'UNBOXING</h3>
+              <p className="text-gray-600">Après 1,234,567 heures d'attente...</p>
+            </div>
+            <div className="aspect-video relative overflow-hidden flex items-center justify-center">
+              <img 
+                src="https://media.giphy.com/media/5x89XRx3sBZFC/giphy.gif" 
+                alt="Tumbleweed" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <button
+              onClick={() => setShowTumbleweed(false)}
+              className="mt-4 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 transition-colors"
             >
-              🌵
-            </motion.div>
+              Retour au stream
+            </button>
           </div>
         )}
       </div>
