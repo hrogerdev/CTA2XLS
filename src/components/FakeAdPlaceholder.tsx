@@ -150,8 +150,8 @@ function EternalLandDrop() {
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   className="whitespace-nowrap text-white text-sm font-bold"
                 >
-                  🚨 BREAKING: Toujours aucun land livré après {Math.floor(streamTime.hours / 24)} jours • La communauté retient son souffle • 
-                  🚨 BREAKING: Toujours aucun land livré après {Math.floor(streamTime.hours / 24)} jours • La communauté retient son souffle • 
+                  🚨 BREAKING: Suivez la livraison des lands en direct ! • 
+                  🚨 BREAKING: Suivez la livraison des lands en direct ! • 
                 </motion.div>
               </div>
             </div>
