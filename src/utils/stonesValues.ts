@@ -132,26 +132,58 @@ export function calculateStoneValue(
   grade?: string,
   evolution?: string | number
 ): number {
-  // Normalize inputs
-  const normalizedFaction = faction || 'Rift';
-  const normalizedRarity = rarity || 'Common';
-  const isFoil = foil === true || foil === 'true' || foil === 'True' || foil === 'Yes';
+  // Normalize inputs - handle uppercase values from API
+  const normalizedFaction = (faction || 'Rift').toLowerCase()
+    .replace('arkhante', 'Arkhante')
+    .replace('mantris', 'Mantris')
+    .replace('rift', 'Rift');
+  
+  // Normalize rarity - API returns UPPERCASE
+  const rarityMap: Record<string, string> = {
+    'common': 'Common',
+    'uncommon': 'Uncommon',
+    'rare': 'Rare',
+    'special rare': 'Special Rare',
+    'specialrare': 'Special Rare',
+    'special_rare': 'Special Rare',
+    'ultra rare': 'Ultra Rare',
+    'ultrarare': 'Ultra Rare',
+    'ultra_rare': 'Ultra Rare',
+    'mythic': 'Mythic'
+  };
+  const normalizedRarity = rarityMap[(rarity || 'Common').toLowerCase()] || 'Common';
+  
+  // Check foil status
+  const isFoil = foil === true || foil === 'true' || foil === 'True' || foil === 'Yes' || foil === 'YES';
   const foilKey = isFoil ? 'Foil' : 'NonFoil';
-  const normalizedAdvancement = advancement || 'Standard';
-  const normalizedGrade = grade || 'C';
+  
+  // Normalize advancement - API returns UPPERCASE
+  const advancementMap: Record<string, string> = {
+    'standard': 'Standard',
+    'alternative': 'Alternative',
+    'combo': 'Combo'
+  };
+  const normalizedAdvancement = advancementMap[(advancement || 'Standard').toLowerCase()] || 'Standard';
+  
+  // Normalize grade
+  const normalizedGrade = (grade || 'C').toUpperCase() || 'C';
   
   // Get collection values
   const collectionValues = STONES_VALUES[normalizedFaction] || STONES_VALUES.Rift;
   
   // Get rarity values
   const rarityValues = collectionValues[foilKey][normalizedRarity as keyof FoilValues];
-  if (!rarityValues) return 0;
+  if (!rarityValues) {
+    console.warn(`No values found for: ${normalizedFaction}/${foilKey}/${normalizedRarity}`);
+    return 0;
+  }
   
   // Calculate based on advancement type
   if (normalizedAdvancement === 'Standard') {
-    // For Standard, use evolution index (1-5) or default to middle value
-    const evoIndex = evolution ? Math.min(Math.max(Number(evolution) - 1, 0), 4) : 2;
-    return rarityValues.Standard[evoIndex] || rarityValues.Standard[2];
+    // For Standard cards, use rank (1-5) as index
+    // If no evolution/rank provided, use first value
+    const rankIndex = evolution ? Math.min(Math.max(Number(evolution) - 1, 0), 4) : 0;
+    return rarityValues.Standard[rankIndex] || rarityValues.Standard[0] || 0;
   } else if (normalizedAdvancement === 'Alternative' || normalizedAdvancement === 'Combo') {
     const advancementValues = rarityValues[normalizedAdvancement as 'Alternative' | 'Combo'];
     return advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;

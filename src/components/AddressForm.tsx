@@ -29,7 +29,7 @@ export function AddressForm({ onSubmit, isLoading }: AddressFormProps) {
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="Enter Immutable X wallet address..."
+          placeholder="Drop your wallet address here, anon..."
           className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           disabled={isLoading}
         />
@@ -40,7 +40,7 @@ export function AddressForm({ onSubmit, isLoading }: AddressFormProps) {
           disabled={isLoading || !address.trim()}
           className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
-          {isLoading ? 'Loading...' : 'View NFTs'}
+          {isLoading ? 'Cooking your Excel...' : 'Generate Excel File 📊'}
         </motion.button>
       </div>
     </motion.form>
