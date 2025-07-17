@@ -2,6 +2,10 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useImxNfts } from './useImxNfts'
 
+declare global {
+  var fetch: any
+}
+
 const mockNfts = [
   {
     token_id: '1',
@@ -113,7 +117,7 @@ describe('useImxNfts', () => {
 
   it('should reset state when wallet address changes', async () => {
     const { result, rerender } = renderHook(
-      ({ address }) => useImxNfts(address),
+      ({ address }: { address: string | null }) => useImxNfts(address),
       { initialProps: { address: null } }
     )
 

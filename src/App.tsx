@@ -6,7 +6,7 @@ import { LoadingSpinner } from './components/LoadingSpinner'
 import { FakeAdPlaceholder } from './components/FakeAdPlaceholder'
 import { useImxNfts } from './hooks/useImxNfts'
 
-function App() {
+export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const { nfts, loading, error, hasMore, loadMore } = useImxNfts(walletAddress)
 

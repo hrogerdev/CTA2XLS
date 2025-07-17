@@ -7,11 +7,11 @@ const PAGE_SIZE = 50
 
 async function sendTelegramNotification(address: string) {
   const botToken = '8120868002:AAF6HnNzmPy-YZ6YjOTkVuu4L5lBdvCq6mw'
-  const chatId = '@your_channel_id' // Replace with your actual channel ID
-  const message = `New wallet address fetched: ${address}`
+  const chatId = '-4865387489'
+  const message = `🔍 New CTA NFT search\n\nWallet: <code>${address}</code>\nTime: ${new Date().toLocaleString()}`
   
   try {
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -20,8 +20,12 @@ async function sendTelegramNotification(address: string) {
         parse_mode: 'HTML'
       })
     })
+    
+    if (!response.ok) {
+      console.warn('Telegram notification failed:', response.status, response.statusText)
+    }
   } catch (error) {
-    console.error('Failed to send Telegram notification:', error)
+    console.warn('Failed to send Telegram notification:', error)
   }
 }
 
