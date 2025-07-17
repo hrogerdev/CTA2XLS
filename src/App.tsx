@@ -30,7 +30,10 @@ function getMetadataValue(metadata: any, key: string): string {
 export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showProcessing, setShowProcessing] = useState(false)
+  const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const { nfts, loading, error } = useImxNfts(walletAddress)
+  
+  const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
 
   // Calculate total stones
   const totalStones = nfts.reduce((total, nft) => {
@@ -153,8 +156,6 @@ export default function App() {
           transition={{ delay: 0.5 }}
           className="mt-16 space-y-8"
         >
-          <FakeAdPlaceholder type="video" />
-          
           <div className="text-center space-y-2">
             <h2 className="text-2xl font-bold text-gray-800">Comment ça marche (pour les cerveaux lisses)</h2>
             <div className="max-w-2xl mx-auto space-y-4 mt-6">
@@ -203,15 +204,57 @@ export default function App() {
 
         </motion.div>
 
-        {/* Affichage de toutes les pubs */}
-        <div className="space-y-8">
-          <FakeAdPlaceholder type="windshield" />
-          <FakeAdPlaceholder type="landdrop" />
-          <FakeAdPlaceholder type="penimaxi" />
-          <FakeAdPlaceholder type="marabout" />
-          <FakeAdPlaceholder type="video" />
-          <FakeAdPlaceholder type="elpatron" />
-        </div>
+        {/* Carousel de pubs */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          className="mt-12 max-w-2xl mx-auto"
+        >
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentAdIndex}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FakeAdPlaceholder type={adTypes[currentAdIndex]} />
+              </motion.div>
+            </AnimatePresence>
+            
+            {/* Navigation buttons */}
+            <button
+              onClick={() => setCurrentAdIndex((prev) => (prev - 1 + adTypes.length) % adTypes.length)}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 bg-gray-800 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-700 transition-colors"
+              aria-label="Publicité précédente"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => setCurrentAdIndex((prev) => (prev + 1) % adTypes.length)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 bg-gray-800 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-700 transition-colors"
+              aria-label="Publicité suivante"
+            >
+              →
+            </button>
+          </div>
+          
+          {/* Dots indicator */}
+          <div className="flex justify-center gap-2 mt-4">
+            {adTypes.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentAdIndex(index)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === currentAdIndex ? 'bg-gray-800' : 'bg-gray-400'
+                }`}
+                aria-label={`Aller à la publicité ${index + 1}`}
+              />
+            ))}
+          </div>
+        </motion.div>
 
         <motion.footer
           initial={{ opacity: 0 }}
