@@ -37,7 +37,7 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
   const [notificationSent, setNotificationSent] = useState(false)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
-  const fetchAllNfts = useCallback(async (address: string, currentCursor?: string, accumulator: ImxNft[] = []) => {
+  const fetchAllNfts = useCallback(async (address: string, currentCursor?: string, accumulator: ImxNft[] = []): Promise<{ nfts: ImxNft[], hasMore: boolean }> => {
     const params = new URLSearchParams({
       user: address,
       collection: CTA_CONTRACT_ADDRESS,
@@ -59,34 +59,37 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
     
     // If there's more data, fetch it automatically
     if (data.cursor && data.remaining > 0) {
-      // Small delay to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 100))
+      // Increased delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 500))
       return fetchAllNfts(address, data.cursor, newAccumulator)
     }
     
     return { nfts: newAccumulator, hasMore: false }
   }, [])
 
-  const fetchNfts = useCallback(async (address: string, isInitial: boolean = true) => {
+  const fetchNfts = useCallback(async (address: string) => {
     try {
-      if (isInitial) {
-        setLoading(true)
-        setNfts([])
-        // Send initial notification
-        if (!notificationSent) {
-          await sendTelegramNotification(`🔍 NFTs fetch en cours pour l'adresse: <code>${address}</code>`)
-          setNotificationSent(true)
-        }
-      } else {
-        setIsLoadingMore(true)
-      }
+      setLoading(true)
+      setNfts([])
       setError(null)
+      
+      // Send initial notification with delay to avoid rate limiting
+      try {
+        await sendTelegramNotification(`🔍 NFTs fetch en cours pour l'adresse: <code>${address}</code>`)
+      } catch (e) {
+        console.warn('Failed to send initial notification:', e)
+      }
 
       const result = await fetchAllNfts(address)
       
+      // Wait a bit before sending completion notification to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
       // Send completion notification
-      if (isInitial) {
+      try {
         await sendTelegramNotification(`✅ L'adresse <code>${address}</code> renvoie <b>${result.nfts.length}</b> NFTs total`)
+      } catch (e) {
+        console.warn('Failed to send completion notification:', e)
       }
 
       setCursor(null)
@@ -95,9 +98,8 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
       setError(err instanceof Error ? err.message : 'Failed to fetch NFTs')
     } finally {
       setLoading(false)
-      setIsLoadingMore(false)
     }
-  }, [fetchAllNfts, notificationSent])
+  }, [fetchAllNfts])
 
   const loadMore = useCallback(() => {
     // Not needed anymore as we fetch all automatically
@@ -108,17 +110,15 @@ export function useImxNfts(walletAddress: string | null): UseImxNftsReturn {
     setCursor(null)
     setHasMore(false)
     setError(null)
-    setNotificationSent(false)
   }, [])
 
   useEffect(() => {
     if (walletAddress) {
-      reset()
       fetchNfts(walletAddress)
     } else {
       reset()
     }
-  }, [walletAddress])
+  }, [walletAddress, fetchNfts, reset])
 
   return {
     nfts,

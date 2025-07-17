@@ -188,19 +188,6 @@ export function NftTable({ nfts, hasMore, onLoadMore, isLoading }: NftTableProps
           </table>
         </div>
 
-        {hasMore && (
-          <div className="px-6 py-4 border-t border-gray-200">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onLoadMore}
-              disabled={isLoading}
-              className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {isLoading ? 'Loading...' : 'Load More'}
-            </motion.button>
-          </div>
-        )}
       </div>
     </motion.div>
   )

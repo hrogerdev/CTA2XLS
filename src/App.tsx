@@ -42,14 +42,32 @@ export default function App() {
           </motion.div>
         )}
 
-        {loading && nfts.length === 0 && <LoadingSpinner />}
+        {loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-2xl mx-auto mt-8 text-center"
+          >
+            <LoadingSpinner />
+            <p className="mt-4 text-gray-600">
+              Fetching Cross The Ages NFTs...
+            </p>
+            {nfts.length > 0 && (
+              <p className="mt-2 text-sm text-gray-500">
+                {nfts.length} NFTs loaded so far...
+              </p>
+            )}
+          </motion.div>
+        )}
 
-        <NftTable
-          nfts={nfts}
-          hasMore={hasMore}
-          onLoadMore={loadMore}
-          isLoading={loading}
-        />
+        {!loading && nfts.length > 0 && (
+          <NftTable
+            nfts={nfts}
+            hasMore={hasMore}
+            onLoadMore={loadMore}
+            isLoading={loading}
+          />
+        )}
 
         <motion.footer
           initial={{ opacity: 0 }}
