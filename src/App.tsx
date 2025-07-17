@@ -245,17 +245,6 @@ export default function App() {
           </div>
         </motion.div>
 
-        <motion.footer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-16 text-center text-sm text-gray-500"
-        >
-          <p>Fait avec 🤡 pour les degens qui ont besoin de tableurs</p>
-          <p className="mt-2">
-            Contrat : 0xa04bcac09a3ca810796c9e3deee8fdc8c9807166
-          </p>
-        </motion.footer>
       </div>
 
     </div>
