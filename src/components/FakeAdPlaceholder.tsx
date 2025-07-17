@@ -67,7 +67,15 @@ function WindshieldAcademy() {
 function EternalLandDrop() {
   const [showTumbleweed, setShowTumbleweed] = useState(false)
   const [viewerCount, setViewerCount] = useState(12847)
-  const [streamTime, setStreamTime] = useState({ hours: 1234567, minutes: 42, seconds: 19 })
+  const [streamTime, setStreamTime] = useState(() => {
+    // Temps depuis 2019 (environ 5 ans)
+    const startDate = new Date('2019-01-01');
+    const elapsed = Date.now() - startDate.getTime();
+    const hours = Math.floor(elapsed / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+    return { hours, minutes, seconds };
+  })
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -101,74 +109,51 @@ function EternalLandDrop() {
             className="relative cursor-pointer"
             onClick={() => setShowTumbleweed(true)}
           >
-            <div className="bg-gray-800 p-4">
-              <div className="absolute top-4 right-4 flex items-center gap-2">
-                <div className="bg-red-600 text-white px-3 py-1 rounded text-sm font-bold flex items-center gap-1">
-                  <span className="animate-pulse">●</span> LIVE
+            <div className="aspect-video bg-gray-900 relative">
+              {/* LIVE badge and viewers */}
+              <div className="absolute top-4 left-4 flex items-center gap-3 z-10">
+                <div className="bg-red-600 text-white px-3 py-1 rounded flex items-center gap-2">
+                  <motion.div
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="w-2 h-2 bg-white rounded-full"
+                  />
+                  <span className="font-bold text-sm">LIVE</span>
                 </div>
-                <div className="bg-gray-900 bg-opacity-80 text-white px-2 py-1 rounded text-sm font-mono">
-                  👁 {viewerCount.toLocaleString()}
+                <div className="bg-black bg-opacity-70 text-white px-3 py-1 rounded text-sm">
+                  👁 {viewerCount.toLocaleString()} spectateurs
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-1">
-                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                  <img src="https://via.placeholder.com/320x180/1a1a1a/666666?text=STREAM+1" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                    CAM 1
-                  </div>
-                </div>
-                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                  <img src="https://via.placeholder.com/320x180/2a2a2a/777777?text=STREAM+2" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                    CAM 2
-                  </div>
-                </div>
-                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                  <img src="https://via.placeholder.com/320x180/3a3a3a/888888?text=STREAM+3" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                    CAM 3
-                  </div>
-                </div>
-                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900" />
-                  <div className="text-white text-center z-10 px-2">
-                    <h3 className="text-lg font-bold mb-1" style={{ fontFamily: 'Impact, sans-serif' }}>
-                      UNBOXING
-                    </h3>
-                    <p className="text-xs">DEPUIS 2019</p>
-                  </div>
-                </div>
-                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                  <div className="w-full h-full flex items-center justify-center text-yellow-400">
-                    <div className="text-center">
-                      <div className="text-2xl font-mono">
-                        {streamTime.hours.toLocaleString()}h
-                      </div>
-                      <div className="text-lg font-mono">
-                        {streamTime.minutes.toString().padStart(2, '0')}:{streamTime.seconds.toString().padStart(2, '0')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                  <img src="https://via.placeholder.com/320x180/4a4a4a/999999?text=CHAT" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                    CHAT LIVE
+              
+              {/* Stream timer */}
+              <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded font-mono text-sm z-10">
+                {streamTime.hours.toLocaleString()}:{streamTime.minutes.toString().padStart(2, '0')}:{streamTime.seconds.toString().padStart(2, '0')}
+              </div>
+              
+              {/* Main content */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-white px-4">
+                  <h3 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Impact, sans-serif' }}>
+                    LIVRAISON DES LANDS EN DIRECT
+                  </h3>
+                  <p className="text-xl mb-4">Suivez l'événement historique !</p>
+                  <div className="text-lg text-yellow-400">
+                    Lands livrés : 0 / ∞
                   </div>
                 </div>
               </div>
-              <div className="mt-2 text-white text-xs overflow-hidden">
+              
+              {/* Bottom ticker */}
+              <div className="absolute bottom-0 left-0 right-0 bg-red-600 py-2 overflow-hidden">
                 <motion.div
                   animate={{ x: [0, -100 + '%'] }}
-                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                  className="whitespace-nowrap"
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="whitespace-nowrap text-white text-sm font-bold"
                 >
-                  ⏰ 1 234 567 h de hype cumulée • 0 terrain livré • Mais on y croit ! • ⏰ 1 234 567 h de hype cumulée • 0 terrain livré • Mais on y croit !
+                  🚨 BREAKING: Toujours aucun land livré après {Math.floor(streamTime.hours / 24)} jours • La communauté retient son souffle • 
+                  🚨 BREAKING: Toujours aucun land livré après {Math.floor(streamTime.hours / 24)} jours • La communauté retient son souffle • 
                 </motion.div>
               </div>
-              <p className="text-center text-gray-400 mt-2">
-                Abonne-toi pour un autre refresh
-              </p>
             </div>
           </div>
         ) : (
@@ -332,36 +317,7 @@ function GrandMarabout() {
 }
 
 function ElPatronVideo() {
-  const [streamTime, setStreamTime] = useState(() => {
-    // Calculer le temps écoulé depuis 1 an
-    const startDate = new Date();
-    startDate.setFullYear(startDate.getFullYear() - 1);
-    const elapsed = Date.now() - startDate.getTime();
-    const hours = Math.floor(elapsed / (1000 * 60 * 60));
-    const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
-    return { hours, minutes, seconds };
-  });
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStreamTime(prev => {
-        let { hours, minutes, seconds } = prev;
-        seconds++;
-        if (seconds >= 60) {
-          seconds = 0;
-          minutes++;
-          if (minutes >= 60) {
-            minutes = 0;
-            hours++;
-          }
-        }
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const [isHovered, setIsHovered] = useState(false);
   
   const handleClick = () => {
     window.open('https://www.crosstheages.com/fr-fr/news/cta/token-generation-event/', '_blank')
@@ -372,59 +328,54 @@ function ElPatronVideo() {
       <div 
         className="bg-black rounded-lg overflow-hidden relative cursor-pointer group"
         onClick={handleClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative">
-          {/* Blurred thumbnail */}
-          <div className="aspect-video relative overflow-hidden">
+          {/* Blurred/clear thumbnail based on hover */}
+          <div className="aspect-video relative overflow-hidden bg-black">
             <div 
-              className="absolute inset-0 bg-gradient-to-br from-pink-400 via-red-400 to-purple-400"
+              className="absolute inset-0 bg-gradient-to-br from-pink-400 via-red-400 to-purple-400 transition-all duration-300"
               style={{
-                filter: 'blur(30px)',
-                animation: 'pulse 3s ease-in-out infinite'
+                filter: isHovered ? 'blur(5px)' : 'blur(40px)',
+                transform: isHovered ? 'scale(1.1)' : 'scale(1)'
               }}
             />
-            <div className="absolute inset-0 bg-black bg-opacity-30" />
+            <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isHovered ? 'bg-opacity-10' : 'bg-opacity-40'}`} />
             
-            {/* LIVE indicator and viewer count */}
-            <div className="absolute top-4 left-4 flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-red-600 px-3 py-1 rounded">
-                <motion.div
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="w-2 h-2 bg-white rounded-full"
-                />
-                <span className="text-white font-bold text-sm">LIVE</span>
+            {/* Age warning overlay */}
+            {!isHovered && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="bg-red-600 text-white px-6 py-4 rounded-lg text-center">
+                  <div className="text-4xl font-bold mb-2">18+</div>
+                  <div className="text-sm">Contenu réservé aux adultes</div>
+                </div>
               </div>
-              <div className="bg-black bg-opacity-70 text-white px-3 py-1 rounded text-sm">
-                👁 100k spectateurs
-              </div>
-            </div>
+            )}
             
-            {/* Stream timer */}
-            <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded font-mono text-sm">
-              {streamTime.hours.toLocaleString()}:{streamTime.minutes.toString().padStart(2, '0')}:{streamTime.seconds.toString().padStart(2, '0')}
-            </div>
-            
-            {/* Play button overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="bg-white bg-opacity-90 rounded-full w-20 h-20 flex items-center justify-center group-hover:bg-opacity-100 transition-all shadow-xl"
+            {/* Play button overlay - only show on hover */}
+            {isHovered && (
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="w-0 h-0 border-l-[30px] border-l-red-600 border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
+                <div className="bg-white bg-opacity-90 rounded-full w-20 h-20 flex items-center justify-center shadow-xl">
+                  <div className="w-0 h-0 border-l-[30px] border-l-red-600 border-t-[20px] border-t-transparent border-b-[20px] border-b-transparent ml-2" />
+                </div>
               </motion.div>
-            </div>
+            )}
             
             {/* Video info overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
               <div className="text-white">
                 <h3 className="text-lg font-bold mb-1">Il Gang-Bang toute une communauté !</h3>
                 <div className="flex items-center gap-3 text-sm text-gray-300">
+                  <span className="text-red-400 font-bold">⭐ VERIFIED</span>
+                  <span>•</span>
                   <span>El Patron</span>
                   <span>•</span>
                   <span>2.3M vues</span>
-                  <span>•</span>
-                  <span>En direct</span>
                 </div>
               </div>
             </div>
