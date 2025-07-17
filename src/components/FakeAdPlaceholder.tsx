@@ -155,7 +155,6 @@ function EternalLandDrop() {
         ) : (
           <div className="relative bg-gradient-to-b from-orange-200 to-yellow-100 p-4">
             <div className="text-center mb-4">
-              <h3 className="text-2xl font-bold text-gray-800">RÉSULTAT DE L'UNBOXING</h3>
               <p className="text-gray-600">Après {streamTime.hours.toLocaleString()} heures d'attente...</p>
             </div>
             <div className="aspect-video relative overflow-hidden flex items-center justify-center bg-black">
