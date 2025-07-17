@@ -332,11 +332,9 @@ function GrandMarabout() {
           <p className="text-xl text-purple-700 mb-3 font-bold">Grand Marabout</p>
           
           <div className="bg-white rounded-lg p-3 mb-4 text-left">
-            <p className="font-bold text-purple-800 mb-2">Marabout :</p>
             <ul className="text-sm space-y-1">
               <li>• Retour de l'être aimé</li>
               <li>• Chiffres du loto</li>
-              <li>• Crypto-désenvoûtement</li>
               <li>• Market-making</li>
               <li>• Choix terrain & voisinage idéal</li>
             </ul>
@@ -350,9 +348,6 @@ function GrandMarabout() {
             WhatsApp +229 69 42 01 337
           </motion.div>
           
-          <div className="mt-3 text-xs text-purple-800">
-            Ton cœur n'attend pas
-          </div>
         </div>
       </div>
     </aside>
