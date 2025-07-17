@@ -157,7 +157,7 @@ export default function App() {
           className="mt-16 space-y-8"
         >
           <div className="text-center space-y-2">
-            <h2 className="text-2xl font-bold text-gray-800">Comment ça marche (pour les cerveaux lisses)</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Mode d'emploi (pour les QI de bulot)</h2>
             <div className="max-w-2xl mx-auto space-y-4 mt-6">
               <motion.div
                 whileHover={{ scale: 1.02 }}
