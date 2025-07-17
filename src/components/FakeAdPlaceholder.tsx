@@ -137,9 +137,6 @@ function EternalLandDrop() {
                     LIVRAISON DES LANDS EN DIRECT
                   </h3>
                   <p className="text-xl mb-4">Suivez l'événement historique !</p>
-                  <div className="text-lg text-yellow-400">
-                    Lands livrés : 0 / ∞
-                  </div>
                 </div>
               </div>
               
@@ -159,14 +156,29 @@ function EternalLandDrop() {
           <div className="relative bg-gradient-to-b from-orange-200 to-yellow-100 p-4">
             <div className="text-center mb-4">
               <h3 className="text-2xl font-bold text-gray-800">RÉSULTAT DE L'UNBOXING</h3>
-              <p className="text-gray-600">Après 1,234,567 heures d'attente...</p>
+              <p className="text-gray-600">Après {streamTime.hours.toLocaleString()} heures d'attente...</p>
             </div>
-            <div className="aspect-video relative overflow-hidden flex items-center justify-center">
+            <div className="aspect-video relative overflow-hidden flex items-center justify-center bg-black">
               <img 
                 src="https://media.giphy.com/media/5x89XRx3sBZFC/giphy.gif" 
                 alt="Tumbleweed" 
                 className="w-full h-full object-cover"
               />
+              
+              {/* LIVE badge */}
+              <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded flex items-center gap-2">
+                <motion.div
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="w-2 h-2 bg-white rounded-full"
+                />
+                <span className="font-bold text-sm">LIVE</span>
+              </div>
+              
+              {/* Viewer count */}
+              <div className="absolute top-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded text-sm">
+                👁 {viewerCount.toLocaleString()} spectateurs
+              </div>
             </div>
             <button
               onClick={() => setShowTumbleweed(false)}
