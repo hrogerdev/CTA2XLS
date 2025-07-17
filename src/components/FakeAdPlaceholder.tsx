@@ -364,7 +364,7 @@ function ElPatronVideo() {
             {/* Video info overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
               <div className="text-white">
-                <h3 className="text-lg font-bold mb-1">Il Gang-Bang toute une communauté !</h3>
+                <h3 className="text-lg font-bold mb-1">Gangbang : il démonte toute une communauté</h3>
                 <div className="flex items-center gap-3 text-sm text-gray-300">
                   <span className="text-red-400 font-bold">⭐ VERIFIED</span>
                   <span>•</span>
