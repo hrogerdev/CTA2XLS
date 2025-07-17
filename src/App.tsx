@@ -132,7 +132,7 @@ export default function App() {
             CTA to XLS 🚀
           </h1>
           <p className="text-lg text-gray-600">
-            Parce que rien ne dit "j'ai réussi" comme un fichier Excel de tes JPEGs
+            Tes JPEGs dans un tableur
           </p>
         </motion.header>
 
