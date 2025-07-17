@@ -147,7 +147,7 @@ function EternalLandDrop() {
                   whileTap={{ scale: 0.95 }}
                   className="bg-red-600 text-white px-4 py-2 text-sm md:px-8 md:py-3 md:text-base rounded-full font-bold shadow-lg hover:bg-red-700 transition-colors"
                 >
-                  ▶️ Regarder
+                  ▶️ Watch now
                 </motion.button>
               </div>
             </div>
