@@ -440,6 +440,7 @@ function ElPatronVideo() {
 
 function VideoEditingScam() {
   const [glitch, setGlitch] = useState(false)
+  const [showBusy, setShowBusy] = useState(false)
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -448,6 +449,28 @@ function VideoEditingScam() {
     }, 3000)
     return () => clearInterval(interval)
   }, [])
+  
+  if (showBusy) {
+    return (
+      <aside id="fake-ad-video" className="max-w-[480px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gray-900 text-white rounded-lg p-8 text-center"
+        >
+          <div className="text-6xl mb-4">🤷‍♂️</div>
+          <h3 className="text-2xl font-bold mb-4">Peux pas en ce moment</h3>
+          <p className="text-lg mb-2">Trop occupé, sorry</p>
+          <button
+            onClick={() => setShowBusy(false)}
+            className="mt-6 text-gray-400 text-sm hover:text-white transition-colors"
+          >
+            Retour
+          </button>
+        </motion.div>
+      </aside>
+    )
+  }
   
   return (
     <aside id="fake-ad-video" className="max-w-[480px] mx-auto my-8">
@@ -492,6 +515,7 @@ function VideoEditingScam() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="bg-yellow-400 text-black font-bold px-8 py-4 rounded-full text-xl"
+            onClick={() => setShowBusy(true)}
           >
             JE VEUX MON DEVIS !
           </motion.button>
