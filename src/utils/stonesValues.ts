@@ -53,7 +53,7 @@ const RIFT_VALUES: CollectionValues = {
   },
   Foil: {
     Common: {
-      Standard: [2, 4, 4, 6, 8],
+      Standard: [2, 4, 4.6667, 6, 8],
       Alternative: { C: 16, B: 42, A: 84, S: 138 },
       Combo: { C: 24, B: 66, A: 132, S: 218 }
     },
@@ -63,7 +63,7 @@ const RIFT_VALUES: CollectionValues = {
       Combo: { C: 42, B: 106, A: 202, S: 330 }
     },
     Rare: {
-      Standard: [20, 22, 26, 28, 30],
+      Standard: [20, 22, 26, 27.6667, 30],
       Alternative: { C: 46, B: 100, A: 178, S: 284 },
       Combo: { C: 62, B: 148, A: 274, S: 444 }
     },
@@ -106,13 +106,13 @@ function multiplyValues(values: CollectionValues, multiplier: number): Collectio
   return result;
 }
 
-// Generate Mantris values (Rift × 2 for NonFoil, Rift × 4 for Foil)
+// Generate Mantris values (Rift × 2 for both NonFoil and Foil)
 const MANTRIS_VALUES: CollectionValues = {
   NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.Foil }, 2).NonFoil,
   Foil: multiplyValues({ NonFoil: RIFT_VALUES.Foil, Foil: RIFT_VALUES.Foil }, 2).NonFoil
 };
 
-// Generate Arkhante values (Rift × 3 for NonFoil, Rift × 6 for Foil)
+// Generate Arkhante values (Rift × 3 for both NonFoil and Foil)
 const ARKHANTE_VALUES: CollectionValues = {
   NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.Foil }, 3).NonFoil,
   Foil: multiplyValues({ NonFoil: RIFT_VALUES.Foil, Foil: RIFT_VALUES.Foil }, 3).NonFoil
@@ -193,10 +193,12 @@ export function calculateStoneValue(
     // For Standard cards, use rank (1-5) as index
     // If no evolution/rank provided, use first value
     const rankIndex = evolution ? Math.min(Math.max(Number(evolution) - 1, 0), 4) : 0;
-    return rarityValues.Standard[rankIndex] || rarityValues.Standard[0] || 0;
+    const value = rarityValues.Standard[rankIndex] || rarityValues.Standard[0] || 0;
+    return Math.round(value);
   } else if (normalizedAdvancement === 'Alternative' || normalizedAdvancement === 'Combo') {
     const advancementValues = rarityValues[normalizedAdvancement as 'Alternative' | 'Combo'];
-    return advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;
+    const value = advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;
+    return Math.round(value);
   }
   
   return 0;
