@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, PanInfo } from 'framer-motion'
 import { AddressForm } from './components/AddressForm'
 import { FakeAdPlaceholder } from './components/FakeAdPlaceholder'
 import { ProcessingAnimation } from './components/ProcessingAnimation'
@@ -34,6 +34,15 @@ export default function App() {
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
+  
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const swipeThreshold = 50
+    if (info.offset.x > swipeThreshold) {
+      setCurrentAdIndex((prev) => (prev - 1 + adTypes.length) % adTypes.length)
+    } else if (info.offset.x < -swipeThreshold) {
+      setCurrentAdIndex((prev) => (prev + 1) % adTypes.length)
+    }
+  }
 
   // Calculate total stones
   const totalStones = nfts.reduce((total, nft) => {
@@ -208,22 +217,27 @@ export default function App() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.3 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                className="cursor-grab active:cursor-grabbing"
               >
                 <FakeAdPlaceholder type={adTypes[currentAdIndex]} />
               </motion.div>
             </AnimatePresence>
             
-            {/* Navigation buttons */}
+            {/* Navigation buttons - hidden on mobile */}
             <button
               onClick={() => setCurrentAdIndex((prev) => (prev - 1 + adTypes.length) % adTypes.length)}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 bg-gray-800 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-700 transition-colors"
+              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 bg-gray-800 text-white rounded-full w-10 h-10 items-center justify-center hover:bg-gray-700 transition-colors"
               aria-label="Publicité précédente"
             >
               ←
             </button>
             <button
               onClick={() => setCurrentAdIndex((prev) => (prev + 1) % adTypes.length)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 bg-gray-800 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-700 transition-colors"
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 bg-gray-800 text-white rounded-full w-10 h-10 items-center justify-center hover:bg-gray-700 transition-colors"
               aria-label="Publicité suivante"
             >
               →

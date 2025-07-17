@@ -141,13 +141,13 @@ function EternalLandDrop() {
               </div>
               
               {/* Watch button */}
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-red-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-red-700 transition-colors"
+                  className="bg-red-600 text-white px-4 py-2 text-sm md:px-8 md:py-3 md:text-base rounded-full font-bold shadow-lg hover:bg-red-700 transition-colors"
                 >
-                  ▶️ Regarder maintenant
+                  ▶️ Regarder
                 </motion.button>
               </div>
             </div>
