@@ -110,15 +110,50 @@ function EternalLandDrop() {
                   👁 {viewerCount.toLocaleString()}
                 </div>
               </div>
-              <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-80" />
-                <div className="text-white text-center z-10">
-                  <h3 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Impact, sans-serif' }}>
-                    UNBOXING DES LANDS
-                  </h3>
-                  <p className="text-xl mb-2">EN DIRECT DEPUIS 2019</p>
-                  <div className="text-4xl font-mono text-yellow-400">
-                    {streamTime.hours.toLocaleString()}h {streamTime.minutes.toString().padStart(2, '0')}m {streamTime.seconds.toString().padStart(2, '0')}s
+              <div className="grid grid-cols-3 gap-1">
+                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                  <img src="https://via.placeholder.com/320x180/1a1a1a/666666?text=STREAM+1" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                    CAM 1
+                  </div>
+                </div>
+                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                  <img src="https://via.placeholder.com/320x180/2a2a2a/777777?text=STREAM+2" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                    CAM 2
+                  </div>
+                </div>
+                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                  <img src="https://via.placeholder.com/320x180/3a3a3a/888888?text=STREAM+3" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                    CAM 3
+                  </div>
+                </div>
+                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900" />
+                  <div className="text-white text-center z-10 px-2">
+                    <h3 className="text-lg font-bold mb-1" style={{ fontFamily: 'Impact, sans-serif' }}>
+                      UNBOXING
+                    </h3>
+                    <p className="text-xs">DEPUIS 2019</p>
+                  </div>
+                </div>
+                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                  <div className="w-full h-full flex items-center justify-center text-yellow-400">
+                    <div className="text-center">
+                      <div className="text-2xl font-mono">
+                        {streamTime.hours.toLocaleString()}h
+                      </div>
+                      <div className="text-lg font-mono">
+                        {streamTime.minutes.toString().padStart(2, '0')}:{streamTime.seconds.toString().padStart(2, '0')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="aspect-video bg-gray-900 flex items-center justify-center relative overflow-hidden">
+                  <img src="https://via.placeholder.com/320x180/4a4a4a/999999?text=CHAT" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                    CHAT LIVE
                   </div>
                 </div>
               </div>
