@@ -492,9 +492,9 @@ function VideoEditingScam() {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-gray-900 text-white rounded-lg p-8 text-center"
         >
-          <div className="text-6xl mb-4">🤷‍♂️</div>
-          <h3 className="text-2xl font-bold mb-4">Peux pas en ce moment</h3>
-          <p className="text-lg mb-2">Trop occupé, sorry</p>
+          <div className="text-6xl mb-4">💩</div>
+          <h3 className="text-2xl font-bold mb-4">Non dispo</h3>
+          <p className="text-lg mb-2">Pour cause de caca nerveux</p>
           <button
             onClick={() => setShowBusy(false)}
             className="mt-6 text-gray-400 text-sm hover:text-white transition-colors"
