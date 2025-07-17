@@ -302,6 +302,7 @@ function Penimaxi() {
 
 function GrandMarabout() {
   const [rotation, setRotation] = useState(0)
+  const [showGif, setShowGif] = useState(false)
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -310,9 +311,36 @@ function GrandMarabout() {
     return () => clearInterval(interval)
   }, [])
   
+  if (showGif) {
+    return (
+      <aside id="fake-ad-marabout" className="max-w-[480px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-black rounded-lg p-4 text-center relative"
+        >
+          <img 
+            src="/dieudo.gif" 
+            alt="Marabout" 
+            className="w-full h-auto rounded"
+          />
+          <button
+            onClick={() => setShowGif(false)}
+            className="mt-4 bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500 transition-colors font-bold"
+          >
+            Retour
+          </button>
+        </motion.div>
+      </aside>
+    )
+  }
+  
   return (
     <aside id="fake-ad-marabout" className="max-w-[480px] mx-auto my-8">
-      <div className="bg-yellow-400 rounded-lg p-6 relative overflow-hidden">
+      <div 
+        className="bg-yellow-400 rounded-lg p-6 relative overflow-hidden cursor-pointer"
+        onClick={() => setShowGif(true)}
+      >
         <div className="absolute inset-0">
           {[...Array(8)].map((_, i) => (
             <motion.div
