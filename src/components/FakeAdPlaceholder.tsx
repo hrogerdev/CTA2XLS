@@ -226,8 +226,31 @@ function EternalLandDrop() {
 
 function Penimaxi() {
   const [isClosing, setIsClosing] = useState(false)
+  const [show404, setShow404] = useState(false)
   
   if (isClosing) return null
+  
+  if (show404) {
+    return (
+      <aside id="fake-ad-penimaxi" className="max-w-[300px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-black text-white rounded-lg p-8 text-center"
+        >
+          <div className="text-6xl mb-4">404</div>
+          <h3 className="text-2xl font-bold mb-4">NOT FOUND</h3>
+          <p className="text-xl text-yellow-400 font-bold">Soon !</p>
+          <button
+            onClick={() => setShow404(false)}
+            className="mt-6 text-gray-400 text-sm hover:text-white transition-colors"
+          >
+            Retour
+          </button>
+        </motion.div>
+      </aside>
+    )
+  }
   
   return (
     <aside id="fake-ad-penimaxi" className="max-w-[300px] mx-auto my-8">
@@ -263,6 +286,7 @@ function Penimaxi() {
           <motion.button
             whileHover={{ scale: 1.1 }}
             className="bg-red-600 text-white font-bold px-6 py-3 rounded-full w-full"
+            onClick={() => setShow404(true)}
           >
             Je clique avant d'y penser
           </motion.button>
