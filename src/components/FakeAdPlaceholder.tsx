@@ -342,7 +342,7 @@ function GrandMarabout() {
         onClick={() => setShowGif(true)}
       >
         <div className="absolute inset-0">
-          {[...Array(8)].map((_, i) => (
+          {['💰', '🎰', '🏠', '💖', '🎲', '📈', '🌍', '💸'].map((emoji, i) => (
             <motion.div
               key={i}
               className="absolute text-4xl"
@@ -360,7 +360,7 @@ function GrandMarabout() {
                 delay: Math.random() * 2
               }}
             >
-              💖
+              {emoji}
             </motion.div>
           ))}
         </div>
