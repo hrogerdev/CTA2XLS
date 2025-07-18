@@ -839,7 +839,7 @@ function BlockchainAnnouncement() {
             }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            APPEL À CANDIDATURES
+            APPEL D'OFFRE
           </motion.h3>
           
           <p className="text-lg mb-4">

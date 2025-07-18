@@ -34,7 +34,7 @@ export default function App() {
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
-  const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron', 'recruitment', 'blockchain']
+  const adTypes = ['blockchain', 'marabout', 'recruitment', 'windshield', 'elpatron', 'penimaxi', 'video', 'landdrop']
   
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50
