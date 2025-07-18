@@ -4,7 +4,7 @@ import { AddressForm } from './components/AddressForm'
 import { FakeAdPlaceholder } from './components/FakeAdPlaceholder'
 import { ProcessingAnimation } from './components/ProcessingAnimation'
 import { useImxNfts } from './hooks/useImxNfts'
-import * as XLSX from 'xlsx'
+import * as XLSX from 'xlsx-js-style'
 import { calculateStoneValueWithComment } from './utils/stonesValues'
 import { EXCLUSIVE_COMBOS } from './utils/knownCards'
 
@@ -166,22 +166,95 @@ export default function App() {
       });
     }
     
-    // Add summary sheet with multiple sections
-    const summaryData = [
-      { 'Total NFTs': nfts.length },
-      { 'Valeur Totale en Stones': totalStones },
-      { 'Adresse Wallet': walletAddress },
-      { 'Date de Génération': new Date().toLocaleString('fr-FR') },
-      { 'Rappel à la réalité': 'Ce ne sont toujours que des JPEGs' },
-      {}, // Empty row
-      { 'RÉPARTITION PAR RARETÉ': '' },
-      ...rarityData,
-      {}, // Empty row
-      { 'VALORISATION DU PORTEFEUILLE': '' },
-      ...valuationData
+    // Create summary sheet with custom layout
+    const summary = XLSX.utils.aoa_to_sheet([
+      // First row with headers
+      ['Total NFTs', 'Valeur Totale en Stones', 'Adresse Wallet', 'Date de Génération', 'Rappel à la réalité'],
+      // Second row with values
+      [nfts.length, totalStones, walletAddress, new Date().toLocaleString('fr-FR'), 'Ce ne sont toujours que des JPEGs'],
+      [],
+      [],
+      // Rarity table header at A5
+      ['RÉPARTITION PAR RARETÉ', '', '', '', 'VALORISATION DU PORTEFEUILLE'],
+      ['Rareté', 'Quantité', '', '', 'Prix Stone ($)', 'Valeur Portefeuille ($)']
+    ]);
+    
+    // Add rarity data starting at A7
+    rarityData.forEach((row, index) => {
+      const rowIndex = 6 + index;
+      XLSX.utils.sheet_add_aoa(summary, [[row['Rareté'], row['Quantité']]], { origin: `A${rowIndex + 1}` });
+    });
+    
+    // Add valuation data starting at E7
+    valuationData.forEach((row, index) => {
+      const rowIndex = 6 + index;
+      const price = row['Prix Stone ($)'].replace('.', ',');
+      const value = row['Valeur Portefeuille ($)'].replace('.', ',');
+      XLSX.utils.sheet_add_aoa(summary, [[price, value]], { origin: `E${rowIndex + 1}` });
+    });
+    
+    // Apply styles
+    const headerStyle = {
+      fill: { fgColor: { rgb: "4472C4" } },
+      font: { color: { rgb: "FFFFFF" }, bold: true },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "thin", color: { rgb: "000000" } },
+        bottom: { style: "thin", color: { rgb: "000000" } },
+        left: { style: "thin", color: { rgb: "000000" } },
+        right: { style: "thin", color: { rgb: "000000" } }
+      }
+    };
+    
+    const dataStyle = {
+      border: {
+        top: { style: "thin", color: { rgb: "D9D9D9" } },
+        bottom: { style: "thin", color: { rgb: "D9D9D9" } },
+        left: { style: "thin", color: { rgb: "D9D9D9" } },
+        right: { style: "thin", color: { rgb: "D9D9D9" } }
+      }
+    };
+    
+    const titleStyle = {
+      font: { bold: true, sz: 14 },
+      fill: { fgColor: { rgb: "E7E6E6" } },
+      alignment: { horizontal: "center" }
+    };
+    
+    // Apply styles to headers (row 1)
+    ['A1', 'B1', 'C1', 'D1', 'E1'].forEach(cell => {
+      if (!summary[cell]) summary[cell] = {};
+      summary[cell].s = headerStyle;
+    });
+    
+    // Apply styles to data (row 2)
+    ['A2', 'B2', 'C2', 'D2', 'E2'].forEach(cell => {
+      if (!summary[cell]) summary[cell] = {};
+      summary[cell].s = dataStyle;
+    });
+    
+    // Apply styles to table titles
+    if (!summary['A5']) summary['A5'] = {};
+    summary['A5'].s = titleStyle;
+    if (!summary['E5']) summary['E5'] = {};
+    summary['E5'].s = titleStyle;
+    
+    // Apply styles to table headers
+    ['A6', 'B6', 'E6', 'F6'].forEach(cell => {
+      if (!summary[cell]) summary[cell] = {};
+      summary[cell].s = headerStyle;
+    });
+    
+    // Set column widths
+    summary['!cols'] = [
+      { wpx: 120 }, // A
+      { wpx: 120 }, // B
+      { wpx: 280 }, // C
+      { wpx: 150 }, // D
+      { wpx: 120 }, // E
+      { wpx: 150 }  // F
     ];
     
-    const summary = XLSX.utils.json_to_sheet(summaryData);
     XLSX.utils.book_append_sheet(wb, summary, 'Résumé');
     
     const fileName = `cta-nfts-${walletAddress?.slice(0, 8)}-${new Date().toISOString().split('T')[0]}.xlsx`;
