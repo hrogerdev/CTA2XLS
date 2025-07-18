@@ -5,7 +5,7 @@ import { FakeAdPlaceholder } from './components/FakeAdPlaceholder'
 import { ProcessingAnimation } from './components/ProcessingAnimation'
 import { useImxNfts } from './hooks/useImxNfts'
 import * as XLSX from 'xlsx'
-import { calculateStoneValue } from './utils/stonesValues'
+import { calculateStoneValue, calculateStoneValueWithComment } from './utils/stonesValues'
 
 function getMetadataValue(metadata: any, key: string): string {
   if (!metadata) return 'N/A'
@@ -31,9 +31,22 @@ export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showProcessing, setShowProcessing] = useState(false)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
+  const [excelGeneratedCount, setExcelGeneratedCount] = useState(0)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
+  
+  // Load excel generated count from localStorage on mount
+  useEffect(() => {
+    const savedCount = localStorage.getItem('cta-xls-excel-count')
+    if (savedCount) {
+      setExcelGeneratedCount(parseInt(savedCount, 10))
+    } else {
+      // Initialiser à 64 pour les fichiers déjà générés
+      setExcelGeneratedCount(64)
+      localStorage.setItem('cta-xls-excel-count', '64')
+    }
+  }, [])
   
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50
@@ -46,15 +59,16 @@ export default function App() {
 
   // Calculate total stones
   const totalStones = nfts.reduce((total, nft) => {
-    const stoneValue = calculateStoneValue(
+    const stoneResult = calculateStoneValueWithComment(
       getMetadataValue(nft.metadata, 'faction'),
       getMetadataValue(nft.metadata, 'rarity'),
       getMetadataValue(nft.metadata, 'foil'),
       getMetadataValue(nft.metadata, 'advancement'),
       getMetadataValue(nft.metadata, 'grade'),
-      getMetadataValue(nft.metadata, 'rank') || getMetadataValue(nft.metadata, 'evolution')
+      getMetadataValue(nft.metadata, 'rank') || getMetadataValue(nft.metadata, 'evolution'),
+      nft.name
     );
-    return total + stoneValue;
+    return total + stoneResult.value;
   }, 0);
 
 
@@ -67,13 +81,14 @@ export default function App() {
 
   const generateExcel = () => {
     const data = nfts.map(nft => {
-      const stoneValue = calculateStoneValue(
+      const stoneResult = calculateStoneValueWithComment(
         getMetadataValue(nft.metadata, 'faction'),
         getMetadataValue(nft.metadata, 'rarity'),
         getMetadataValue(nft.metadata, 'foil'),
         getMetadataValue(nft.metadata, 'advancement'),
         getMetadataValue(nft.metadata, 'grade'),
-        getMetadataValue(nft.metadata, 'rank') || getMetadataValue(nft.metadata, 'evolution')
+        getMetadataValue(nft.metadata, 'rank') || getMetadataValue(nft.metadata, 'evolution'),
+        nft.name
       );
       
       return {
@@ -88,7 +103,8 @@ export default function App() {
         'Advancement': getMetadataValue(nft.metadata, 'advancement'),
         'Evolution': getMetadataValue(nft.metadata, 'evolution'),
         'Foil': getMetadataValue(nft.metadata, 'foil'),
-        'Stone Value': stoneValue,
+        'Stone Value': stoneResult.value,
+        'Commentaire': stoneResult.comment || '',
         'Description': nft.description || 'N/A',
         'Status': nft.status,
         'Created At': nft.created_at || 'N/A',
@@ -130,6 +146,11 @@ export default function App() {
       URL.revokeObjectURL(url);
     }, 100);
     
+    // Increment Excel generated count
+    const newCount = excelGeneratedCount + 1;
+    setExcelGeneratedCount(newCount);
+    localStorage.setItem('cta-xls-excel-count', newCount.toString());
+    
     setShowProcessing(false);
     setWalletAddress(null);
   };
@@ -152,8 +173,24 @@ export default function App() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-12 relative"
         >
+          {/* Compteur en haut à droite */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="absolute top-0 right-0 bg-gradient-to-br from-gray-700 to-gray-900 text-white px-4 py-3 rounded-lg shadow-xl"
+          >
+            <p className="text-xs font-medium text-gray-300">Excel générés</p>
+            <p className="text-3xl font-bold">{excelGeneratedCount.toLocaleString('fr-FR')}</p>
+            {excelGeneratedCount > 0 && (
+              <p className="text-xs text-gray-400 mt-1">
+                {excelGeneratedCount === 1 ? "Premier !" : "Et ça continue..."}
+              </p>
+            )}
+          </motion.div>
+          
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             CTA to XLS 🚀
           </h1>
@@ -277,6 +314,21 @@ export default function App() {
         </motion.div>
 
       </div>
+
+      {/* Footer avec messages selon le nombre */}
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="text-center py-8 text-gray-500"
+      >
+        <p className="text-xs">
+          {excelGeneratedCount > 50 && "📊 Plus de 50 fichiers Excel ! Les tableurs sont nos amis..."}
+          {excelGeneratedCount > 100 && " 🏆 Plus de 100 ! Vous êtes officiellement accros aux tableaux..."}
+          {excelGeneratedCount > 250 && " 🔥 Plus de 250 ! Excel devrait vous sponsoriser..."}
+          {excelGeneratedCount > 500 && " 🚀 Plus de 500 ! À ce stade, c'est une religion..."}
+        </p>
+      </motion.footer>
 
     </div>
   )

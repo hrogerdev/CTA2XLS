@@ -124,13 +124,22 @@ export const STONES_VALUES: Record<string, CollectionValues> = {
   Arkhante: ARKHANTE_VALUES
 };
 
+// Import pour les combos
+import { parseComboRarities, HARDCODED_COMBO_VALUES, EXCLUSIVE_COMBOS } from './knownCards';
+
+export interface StoneCalculationResult {
+  value: number;
+  comment?: string;
+}
+
 export function calculateStoneValue(
   faction: string,
   rarity: string,
   foil: string | boolean,
   advancement: string,
   grade?: string,
-  evolution?: string | number
+  evolution?: string | number,
+  cardName?: string
 ): number {
   // Check if it's an exclusive card (no stones value)
   if (!advancement || advancement.toLowerCase() === 'exclusive' || advancement.toLowerCase() === 'exclu') {
@@ -195,11 +204,99 @@ export function calculateStoneValue(
     const rankIndex = evolution ? Math.min(Math.max(Number(evolution) - 1, 0), 4) : 0;
     const value = rarityValues.Standard[rankIndex] || rarityValues.Standard[0] || 0;
     return Math.round(value);
-  } else if (normalizedAdvancement === 'Alternative' || normalizedAdvancement === 'Combo') {
-    const advancementValues = rarityValues[normalizedAdvancement as 'Alternative' | 'Combo'];
+  } else if (normalizedAdvancement === 'Alternative') {
+    const advancementValues = rarityValues.Alternative;
+    const value = advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;
+    return Math.round(value);
+  } else if (normalizedAdvancement === 'Combo') {
+    // Pour les combos, calculer la somme des valeurs des cartes composantes
+    if (cardName) {
+      const comboRarities = parseComboRarities(cardName);
+      if (comboRarities.length > 0) {
+        let totalValue = 0;
+        
+        // Pour chaque carte du combo, obtenir sa valeur de base
+        for (const comboRarity of comboRarities) {
+          const normalizedComboRarity = rarityMap[comboRarity.toLowerCase()] || comboRarity;
+          const comboRarityValues = collectionValues[foilKey][normalizedComboRarity as keyof FoilValues];
+          if (comboRarityValues && comboRarityValues.Combo) {
+            totalValue += comboRarityValues.Combo[normalizedGrade as keyof typeof comboRarityValues.Combo] || 0;
+          }
+        }
+        
+        return Math.round(totalValue);
+      }
+    }
+    
+    // Fallback: utiliser la valeur combo de la rareté principale
+    const advancementValues = rarityValues.Combo;
     const value = advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;
     return Math.round(value);
   }
   
   return 0;
+}
+
+export function calculateStoneValueWithComment(
+  faction: string,
+  rarity: string,
+  foil: string | boolean,
+  advancement: string,
+  grade?: string,
+  evolution?: string | number,
+  cardName?: string
+): StoneCalculationResult {
+  // Check if it's an exclusive card (no stones value)
+  if (!advancement || advancement.toLowerCase() === 'exclusive' || advancement.toLowerCase() === 'exclu') {
+    return { value: 0, comment: 'Carte Exclusive - Pas de valeur stones' };
+  }
+  
+  // Check if it's an exclusive combo
+  if (cardName && EXCLUSIVE_COMBOS.includes(cardName.toLowerCase())) {
+    return { value: 0, comment: 'Combo Exclusive - Pas de valeur stones' };
+  }
+  
+  // Vérifier les valeurs hardcodées pour certains combos SR
+  if (advancement && advancement.toLowerCase() === 'combo' && cardName && grade) {
+    const hardcodedKey = `${cardName.toLowerCase()}|${grade.toLowerCase()}`;
+    if (HARDCODED_COMBO_VALUES[hardcodedKey]) {
+      // Appliquer le multiplicateur de faction aux valeurs hardcodées
+      const baseValue = HARDCODED_COMBO_VALUES[hardcodedKey];
+      const normalizedFaction = (faction || 'Rift').toLowerCase()
+        .replace('arkhante', 'Arkhante')
+        .replace('mantris', 'Mantris')
+        .replace('rift', 'Rift');
+      const isFoil = foil === true || foil === 'true' || foil === 'True' || foil === 'Yes' || foil === 'YES';
+      
+      let multiplier = 1;
+      if (normalizedFaction === 'Mantris') {
+        multiplier = isFoil ? 4 : 2;
+      } else if (normalizedFaction === 'Arkhante') {
+        multiplier = isFoil ? 6 : 3;
+      } else if (isFoil) {
+        multiplier = 2;
+      }
+      
+      return {
+        value: Math.round(baseValue * multiplier),
+        comment: 'Combo SR - Valeur stones à vérifier'
+      };
+    }
+    
+    // Vérifier si c'est un combo SR connu
+    const lowerCardName = cardName.toLowerCase();
+    const srCombos = ['sijin', 'riona', 'arkhel', 'aiden pearce & dalton wolfe', 'wrench & auntie shu', 
+                      'greek & voranth & chaka', 'clara lille & dermot "lucky" quinn', 'lancer & knight & tanker',
+                      'wini & galile', 'the wandering triad', 'erika & tiger robot', 'hannibal & honora'];
+    
+    if (srCombos.some(sr => lowerCardName.includes(sr))) {
+      // Calcul normal mais avec commentaire
+      const value = calculateStoneValue(faction, rarity, foil, advancement, grade, evolution, cardName);
+      return { value, comment: 'Combo SR - Valeur stones à vérifier' };
+    }
+  }
+  
+  // Sinon, utiliser le calcul normal
+  const value = calculateStoneValue(faction, rarity, foil, advancement, grade, evolution, cardName);
+  return { value, comment: undefined };
 }
