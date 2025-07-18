@@ -31,21 +31,44 @@ export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showProcessing, setShowProcessing] = useState(false)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
-  const [excelGeneratedCount, setExcelGeneratedCount] = useState(0)
+  const [excelGeneratedCount, setExcelGeneratedCount] = useState(64)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
   
-  // Load excel generated count from localStorage on mount
+  // Load and refresh global excel count from CountAPI
   useEffect(() => {
-    const savedCount = localStorage.getItem('cta-xls-excel-count')
-    if (savedCount) {
-      setExcelGeneratedCount(parseInt(savedCount, 10))
-    } else {
-      // Initialiser à 64 pour les fichiers déjà générés
-      setExcelGeneratedCount(64)
-      localStorage.setItem('cta-xls-excel-count', '64')
+    const fetchCount = () => {
+      fetch('https://api.countapi.xyz/get/cta-to-xls/excel-counter')
+        .then(res => res.json())
+        .then(data => {
+          if (data.value) {
+            setExcelGeneratedCount(data.value)
+          }
+        })
+        .catch(() => {
+          // En cas d'erreur, initialiser le compteur
+          fetch('https://api.countapi.xyz/create?namespace=cta-to-xls&key=excel-counter&value=64')
+            .then(res => res.json())
+            .then(data => {
+              if (data.value) {
+                setExcelGeneratedCount(data.value)
+              }
+            })
+            .catch(() => {
+              // Fallback au cas où CountAPI ne fonctionne pas
+              setExcelGeneratedCount(64)
+            })
+        })
     }
+    
+    // Charger au démarrage
+    fetchCount()
+    
+    // Actualiser toutes les 30 secondes
+    const interval = setInterval(fetchCount, 30000)
+    
+    return () => clearInterval(interval)
   }, [])
   
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -146,10 +169,18 @@ export default function App() {
       URL.revokeObjectURL(url);
     }, 100);
     
-    // Increment Excel generated count
-    const newCount = excelGeneratedCount + 1;
-    setExcelGeneratedCount(newCount);
-    localStorage.setItem('cta-xls-excel-count', newCount.toString());
+    // Increment global Excel count
+    fetch('https://api.countapi.xyz/hit/cta-to-xls/excel-counter')
+      .then(res => res.json())
+      .then(data => {
+        if (data.value) {
+          setExcelGeneratedCount(data.value);
+        }
+      })
+      .catch(() => {
+        // En cas d'erreur, incrémenter localement
+        setExcelGeneratedCount(prev => prev + 1);
+      });
     
     setShowProcessing(false);
     setWalletAddress(null);
@@ -175,20 +206,14 @@ export default function App() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12 relative"
         >
-          {/* Compteur en haut à droite */}
+          {/* Compteur discret en haut à droite */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="absolute top-0 right-0 bg-gradient-to-br from-gray-700 to-gray-900 text-white px-4 py-3 rounded-lg shadow-xl"
+            className="absolute top-0 right-0 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg shadow-sm"
           >
-            <p className="text-xs font-medium text-gray-300">Excel générés</p>
-            <p className="text-3xl font-bold">{excelGeneratedCount.toLocaleString('fr-FR')}</p>
-            {excelGeneratedCount > 0 && (
-              <p className="text-xs text-gray-400 mt-1">
-                {excelGeneratedCount === 1 ? "Premier !" : "Et ça continue..."}
-              </p>
-            )}
+            <p className="text-2xl font-semibold">{excelGeneratedCount.toLocaleString('fr-FR')}</p>
           </motion.div>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
