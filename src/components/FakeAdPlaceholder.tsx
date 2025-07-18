@@ -591,6 +591,136 @@ function VideoEditingScam() {
   )
 }
 
+function RecruitmentStudio() {
+  const [showDetail, setShowDetail] = useState(false)
+  
+  if (showDetail) {
+    return (
+      <aside id="fake-ad-recruitment" className="max-w-[480px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 rounded-lg p-8 text-white"
+        >
+          <h2 className="text-3xl font-bold mb-6 text-center">SOON STUDIO 🎮</h2>
+          
+          <div className="space-y-4 mb-6">
+            <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+              <h3 className="font-bold text-xl mb-2">Profil recherché :</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• Dev senior avec 10 ans d'XP sur React 19</li>
+                <li>• Tu connais les design patterns ? C'est quoi ?</li>
+                <li>• Git rebase interactif = sport extrême</li>
+                <li>• Documentation allergique acceptée</li>
+              </ul>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+              <h3 className="font-bold text-xl mb-2">Avantages :</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• Salaire en NFTs CTA (valeur variable)</li>
+                <li>• Machine à café en panne depuis 2019</li>
+                <li>• Baby-foot avec 3 joueurs sur 8</li>
+                <li>• Crunch permanent = esprit de famille</li>
+              </ul>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+              <h3 className="font-bold text-xl mb-2">Process de recrutement :</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• 1 test technique de 48h non payé</li>
+                <li>• 3 entretiens + 1 battle de push-ups</li>
+                <li>• QI test + test de personnalité astrologique</li>
+                <li>• Diplôme facultatif si tu viens des quartiers</li>
+              </ul>
+            </div>
+          </div>
+          
+          <button
+            onClick={() => setShowDetail(false)}
+            className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg transition-colors"
+          >
+            Fermer l'annonce
+          </button>
+        </motion.div>
+      </aside>
+    )
+  }
+  
+  return (
+    <aside id="fake-ad-recruitment" className="max-w-[480px] mx-auto my-8">
+      <motion.div 
+        className="bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 rounded-lg p-6 cursor-pointer relative overflow-hidden"
+        whileHover={{ scale: 1.02 }}
+        onClick={() => setShowDetail(true)}
+      >
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          {['🎮', '💻', '🚀', '💀', '🔥'].map((emoji, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-4xl opacity-10"
+              style={{
+                left: `${20 + i * 15}%`,
+                top: `${Math.random() * 80}%`,
+              }}
+              animate={{ 
+                y: [0, -30, 0],
+                rotate: [0, 360]
+              }}
+              transition={{ 
+                duration: 5,
+                repeat: Infinity,
+                delay: i * 0.5
+              }}
+            >
+              {emoji}
+            </motion.div>
+          ))}
+        </div>
+        
+        <div className="relative z-10 text-white text-center">
+          <motion.h3 
+            className="text-3xl font-bold mb-4"
+            animate={{ 
+              scale: [1, 1.05, 1],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            REJOINS SOON STUDIO
+          </motion.h3>
+          
+          <p className="text-xl mb-4 font-bold text-pink-300">
+            On recrute des devs qui shipent dans le noir 🌙
+          </p>
+          
+          <div className="bg-white/20 backdrop-blur rounded-lg p-4 mb-4">
+            <p className="text-lg font-bold mb-2">Points bonus si :</p>
+            <ul className="text-left space-y-1">
+              <li>✅ Tu push en prod le vendredi soir</li>
+              <li>✅ "Ça marche sur ma machine" = ta devise</li>
+              <li>✅ Quartiers Nord = +50 points street cred</li>
+              <li>✅ Tests ? On verra plus tard...</li>
+            </ul>
+          </div>
+          
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold px-8 py-3 rounded-full inline-block"
+          >
+            POSTULER MAINTENANT
+          </motion.div>
+          
+          <p className="text-xs mt-4 text-gray-300">
+            *Stage non rémunéré avec possibilité d'embauche (peut-être)
+          </p>
+        </div>
+      </motion.div>
+    </aside>
+  )
+}
+
 export function FakeAdPlaceholder({ type }: { type?: string }) {
   const ads = {
     windshield: WindshieldAcademy,
@@ -598,7 +728,8 @@ export function FakeAdPlaceholder({ type }: { type?: string }) {
     penimaxi: Penimaxi,
     marabout: GrandMarabout,
     video: VideoEditingScam,
-    elpatron: ElPatronVideo
+    elpatron: ElPatronVideo,
+    recruitment: RecruitmentStudio
   }
   
   if (type && ads[type as keyof typeof ads]) {

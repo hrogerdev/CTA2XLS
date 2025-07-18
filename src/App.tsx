@@ -34,7 +34,16 @@ export default function App() {
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
-  const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
+  const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron', 'recruitment']
+  
+  // Auto-rotate carousel every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentAdIndex((prev) => (prev + 1) % adTypes.length)
+    }, 2000)
+    
+    return () => clearInterval(interval)
+  }, [adTypes.length])
   
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50
@@ -174,10 +183,9 @@ export default function App() {
       XLSX.utils.sheet_add_aoa(summary, [[price, value]], { origin: `E${rowIndex + 1}` });
     });
     
-    // Add warning note below valuation table
-    const noteRow = 7 + valuationData.length;
-    XLSX.utils.sheet_add_aoa(summary, [['', '', '', '', '* attention les Exclu ne sont pas comptées,']], { origin: `E${noteRow}` });
-    XLSX.utils.sheet_add_aoa(summary, [['', '', '', '', 'et il y a des approximations pour certaines Combo..']], { origin: `E${noteRow + 1}` });
+    // Add warning note at E23
+    XLSX.utils.sheet_add_aoa(summary, [['', '', '', '', '* attention les Exclu ne sont pas comptées,']], { origin: 'E23' });
+    XLSX.utils.sheet_add_aoa(summary, [['', '', '', '', 'et il y a des approximations pour certaines Combo..']], { origin: 'E24' });
     
     // Apply styles
     const headerStyle = {
@@ -238,8 +246,7 @@ export default function App() {
     };
     
     // Apply note style
-    const noteStartRow = 7 + valuationData.length;
-    [`E${noteStartRow}`, `E${noteStartRow + 1}`].forEach(cell => {
+    ['E23', 'E24'].forEach(cell => {
       if (!summary[cell]) summary[cell] = {};
       summary[cell].s = noteStyle;
     });
