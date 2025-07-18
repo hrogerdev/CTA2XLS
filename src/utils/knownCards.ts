@@ -131,6 +131,16 @@ export const KNOWN_CARDS: Record<string, string> = {
   'phosphene': 'SPECIAL RARE',
   'sollale': 'SPECIAL RARE',
   'garth': 'SPECIAL RARE',
+  // Cartes pour les combos spéciaux
+  'dog robot': 'RARE',
+  'tiger robot': 'RARE',
+  'cyber-scorpion': 'RARE',
+  'meca bird': 'RARE',
+  'zanger serie': 'RARE',
+  'class iii utility robot': 'RARE',
+  'skar': 'RARE',
+  'sylphio': 'RARE',
+  'diane': 'RARE',
   // Ajouter d'autres cartes au fur et à mesure qu'on les découvre
 };
 
@@ -144,9 +154,9 @@ export const SPECIAL_COMBO_NAMES: Record<string, string[]> = {
   'riona': ['division vii', 'terak', 'lynn', 'psychard', 'raven', 'seelung', 'sit', 'souleiman', 'drone', 'criarunes', 'class i utility drone', 'jackie', 'mantrix council'],
   'sijin': ['the no', 'ricred', 'lylini', 'chaka', 'taki', 'arijuna', 'nyvenn', 'galile', 'bou', 'kahi & khennan', 'phosphene', 'sollale', 'garth'],
   // Autres combos spéciaux qui ne suivent pas le format A & B
-  'zanger restoration': ['zanger', 'restoration'],
-  'robotic chimera': ['robotic', 'chimera'],
-  'the wandering triad': ['wandering', 'triad']
+  'robotic chimera': ['dog robot', 'tiger robot', 'cyber-scorpion', 'meca bird'],
+  'zanger restoration': ['zanger serie', 'class iii utility robot'],
+  'the wandering triad': ['skar', 'sylphio', 'diane']
 };
 
 // Liste des combos EXCLUSIVE (pas de valeur stones)

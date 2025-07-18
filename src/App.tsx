@@ -140,7 +140,7 @@ export default function App() {
     });
     
     // De 0.025 à 0.012 par pas de 0.001
-    for (let price = 0.025; price >= 0.012; price -= 0.001) {
+    for (let price = 0.025; price >= 0.0119; price -= 0.001) {
       valuationData.push({
         'Prix Stone ($)': price.toFixed(3),
         'Valeur Portefeuille ($)': (totalStones * price).toFixed(2)
@@ -173,6 +173,11 @@ export default function App() {
       const value = row['Valeur Portefeuille ($)'].replace('.', ',');
       XLSX.utils.sheet_add_aoa(summary, [[price, value]], { origin: `E${rowIndex + 1}` });
     });
+    
+    // Add warning note below valuation table
+    const noteRow = 7 + valuationData.length;
+    XLSX.utils.sheet_add_aoa(summary, [['', '', '', '', '* attention les Exclu ne sont pas comptées,']], { origin: `E${noteRow}` });
+    XLSX.utils.sheet_add_aoa(summary, [['', '', '', '', 'et il y a des approximations pour certaines Combo..']], { origin: `E${noteRow + 1}` });
     
     // Apply styles
     const headerStyle = {
@@ -226,6 +231,19 @@ export default function App() {
       summary[cell].s = headerStyle;
     });
     
+    // Apply style to note
+    const noteStyle = {
+      font: { italic: true, sz: 10 },
+      alignment: { wrapText: true }
+    };
+    
+    // Apply note style
+    const noteStartRow = 7 + valuationData.length;
+    [`E${noteStartRow}`, `E${noteStartRow + 1}`].forEach(cell => {
+      if (!summary[cell]) summary[cell] = {};
+      summary[cell].s = noteStyle;
+    });
+    
     // Set column widths
     summary['!cols'] = [
       { wpx: 120 }, // A
@@ -233,7 +251,7 @@ export default function App() {
       { wpx: 280 }, // C
       { wpx: 150 }, // D
       { wpx: 120 }, // E
-      { wpx: 150 }  // F
+      { wpx: 180 }  // F (increased for note)
     ];
     
     XLSX.utils.book_append_sheet(wb, summary, 'Résumé');
