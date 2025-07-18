@@ -36,30 +36,21 @@ export default function App() {
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
   
-  // Load and refresh global excel count from CountAPI
+  // Load and refresh global excel count
   useEffect(() => {
-    const fetchCount = () => {
-      fetch('https://api.countapi.xyz/get/cta-to-xls/excel-counter')
-        .then(res => res.json())
-        .then(data => {
-          if (data.value) {
-            setExcelGeneratedCount(data.value)
-          }
-        })
-        .catch(() => {
-          // En cas d'erreur, initialiser le compteur
-          fetch('https://api.countapi.xyz/create?namespace=cta-to-xls&key=excel-counter&value=64')
-            .then(res => res.json())
-            .then(data => {
-              if (data.value) {
-                setExcelGeneratedCount(data.value)
-              }
-            })
-            .catch(() => {
-              // Fallback au cas où CountAPI ne fonctionne pas
-              setExcelGeneratedCount(64)
-            })
-        })
+    const fetchCount = async () => {
+      try {
+        const response = await fetch('https://api.counterapi.dev/v1/cta-to-xls/excel-counter')
+        const data = await response.json()
+        if (data.count !== undefined) {
+          setExcelGeneratedCount(data.count + 64) // Ajouter les 64 initiaux
+        }
+      } catch (error) {
+        console.error('Error fetching counter:', error)
+        // Utiliser localStorage en fallback
+        const localCount = localStorage.getItem('cta-xls-count')
+        setExcelGeneratedCount(localCount ? parseInt(localCount) : 64)
+      }
     }
     
     // Charger au démarrage
@@ -174,16 +165,20 @@ export default function App() {
     }, 100);
     
     // Increment global Excel count
-    fetch('https://api.countapi.xyz/hit/cta-to-xls/excel-counter')
+    fetch('https://api.counterapi.dev/v1/cta-to-xls/excel-counter/up', {
+      method: 'GET'
+    })
       .then(res => res.json())
       .then(data => {
-        if (data.value) {
-          setExcelGeneratedCount(data.value);
+        if (data.count !== undefined) {
+          setExcelGeneratedCount(data.count + 64);
         }
       })
       .catch(() => {
-        // En cas d'erreur, incrémenter localement
-        setExcelGeneratedCount(prev => prev + 1);
+        // En cas d'erreur, incrémenter localement et sauvegarder
+        const newCount = excelGeneratedCount + 1;
+        setExcelGeneratedCount(newCount);
+        localStorage.setItem('cta-xls-count', newCount.toString());
       });
     
     setShowProcessing(false);
