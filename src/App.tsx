@@ -114,6 +114,12 @@ export default function App() {
         nft.name
       );
       
+      // Ajouter commentaire pour Mint Pass
+      let comment = stoneResult.comment || '';
+      if (nft.name && nft.name.toLowerCase().includes('mint pass')) {
+        comment = comment ? comment + ' - La Retraite !' : 'La Retraite !';
+      }
+      
       return {
         'Token ID': nft.token_id,
         'Name': nft.name || 'N/A',
@@ -127,11 +133,9 @@ export default function App() {
         'Evolution': getMetadataValue(nft.metadata, 'evolution'),
         'Foil': getMetadataValue(nft.metadata, 'foil'),
         'Stone Value': stoneResult.value,
-        'Commentaire': stoneResult.comment || '',
+        'Commentaire': comment,
         'Description': nft.description || 'N/A',
-        'Status': nft.status,
-        'Created At': nft.created_at || 'N/A',
-        'URI': nft.uri || 'N/A'
+        'Created At': nft.created_at || 'N/A'
       };
     });
 
@@ -211,9 +215,10 @@ export default function App() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="absolute top-0 right-0 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg shadow-sm"
+            className="absolute top-0 right-0 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg shadow-sm flex items-center gap-2"
           >
             <p className="text-2xl font-semibold">{excelGeneratedCount.toLocaleString('fr-FR')}</p>
+            <p className="text-sm text-gray-500">Excel générés</p>
           </motion.div>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
