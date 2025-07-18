@@ -29,4 +29,25 @@ dist-ssr
 .env.production
 
 # Netlify
-.netlify
+.netlify# Temporary files
+fetch-log.txt
+fetch-progress-temp.json
+
+# Large data files
+cta-*.csv
+cta-*.json
+!cta-all-metadata-merged.csv
+
+# Excel files
+*.xlsx
+
+# Temporary scripts
+calculate-stones-*.js
+fetch-*.js
+merge-excel-data.js
+process-fetched-data.js
+generate-card-database.js
+
+# Backup files
+*-backup.ts
+*-updated.ts

@@ -1,3 +1,6 @@
+import { parseComboRarities, EXCLUSIVE_COMBOS, HARDCODED_COMBO_VALUES } from './knownCards';
+import { getCardInfo } from './cardDatabase';
+
 interface RarityValues {
   Standard: number[];
   Alternative: { C: number; B: number; A: number; S: number };
@@ -18,7 +21,8 @@ interface CollectionValues {
   Foil: FoilValues;
 }
 
-const RIFT_VALUES: CollectionValues = {
+// Valeurs de base (RIFT) - utiliser les nouvelles valeurs fournies
+const BASE_VALUES: CollectionValues = {
   NonFoil: {
     Common: {
       Standard: [1, 2, 2, 3, 4],
@@ -53,7 +57,7 @@ const RIFT_VALUES: CollectionValues = {
   },
   Foil: {
     Common: {
-      Standard: [2, 4, 4.6667, 6, 8],
+      Standard: [2, 4, 4, 6, 8],
       Alternative: { C: 16, B: 42, A: 84, S: 138 },
       Combo: { C: 24, B: 66, A: 132, S: 218 }
     },
@@ -63,7 +67,7 @@ const RIFT_VALUES: CollectionValues = {
       Combo: { C: 42, B: 106, A: 202, S: 330 }
     },
     Rare: {
-      Standard: [20, 22, 26, 27.6667, 30],
+      Standard: [20, 22, 26, 28, 30],
       Alternative: { C: 46, B: 100, A: 178, S: 284 },
       Combo: { C: 62, B: 148, A: 274, S: 444 }
     },
@@ -85,51 +89,71 @@ const RIFT_VALUES: CollectionValues = {
   }
 };
 
-// Helper function to multiply values
-function multiplyValues(values: CollectionValues, multiplier: number): CollectionValues {
-  const result: any = { NonFoil: {}, Foil: {} };
-  
-  for (const foilType of ['NonFoil', 'Foil'] as const) {
-    for (const rarity in values[foilType]) {
-      result[foilType][rarity] = {
-        Standard: values[foilType][rarity as keyof FoilValues].Standard.map(v => v * multiplier),
-        Alternative: Object.fromEntries(
-          Object.entries(values[foilType][rarity as keyof FoilValues].Alternative).map(([k, v]) => [k, v * multiplier])
-        ),
-        Combo: Object.fromEntries(
-          Object.entries(values[foilType][rarity as keyof FoilValues].Combo).map(([k, v]) => [k, v * multiplier])
-        )
-      };
-    }
-  }
-  
-  return result;
-}
-
-// Generate Mantris values (Rift × 2 for both NonFoil and Foil)
-const MANTRIS_VALUES: CollectionValues = {
-  NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.Foil }, 2).NonFoil,
-  Foil: multiplyValues({ NonFoil: RIFT_VALUES.Foil, Foil: RIFT_VALUES.Foil }, 2).NonFoil
+// Coefficients de saison
+const SEASON_MULTIPLIERS = {
+  RIFT: { NonFoil: 1, Foil: 1 },     // Foil est déjà x2 dans les valeurs de base
+  MANTRIS: { NonFoil: 2, Foil: 2 },  // x2 sur les valeurs foil de base
+  ARKHANTE: { NonFoil: 3, Foil: 3 }  // x3 sur les valeurs foil de base
 };
 
-// Generate Arkhante values (Rift × 3 for both NonFoil and Foil)
-const ARKHANTE_VALUES: CollectionValues = {
-  NonFoil: multiplyValues({ NonFoil: RIFT_VALUES.NonFoil, Foil: RIFT_VALUES.Foil }, 3).NonFoil,
-  Foil: multiplyValues({ NonFoil: RIFT_VALUES.Foil, Foil: RIFT_VALUES.Foil }, 3).NonFoil
+const rarityMap: Record<string, string> = {
+  common: 'Common',
+  uncommon: 'Uncommon',
+  rare: 'Rare',
+  'special rare': 'Special Rare',
+  special_rare: 'Special Rare',
+  'ultra rare': 'Ultra Rare',
+  ultra_rare: 'Ultra Rare',
+  mythic: 'Mythic',
+  exclusive: 'Mythic' // Traiter EXCLUSIVE comme MYTHIC pour les valeurs
 };
 
-export const STONES_VALUES: Record<string, CollectionValues> = {
-  Rift: RIFT_VALUES,
-  Mantris: MANTRIS_VALUES,
-  Arkhante: ARKHANTE_VALUES
-};
-
-// Import pour les combos
-import { parseComboRarities, HARDCODED_COMBO_VALUES, EXCLUSIVE_COMBOS } from './knownCards';
-
-export interface StoneCalculationResult {
+interface StoneCalculationResult {
   value: number;
   comment?: string;
+}
+
+// Nouvelle fonction pour calculer la valeur d'un combo avec multi-saisons
+function calculateComboValueMultiSeason(
+  cardName: string,
+  grade: string,
+  isFoil: boolean
+): { value: number; details: string } {
+  const foilKey = isFoil ? 'Foil' : 'NonFoil';
+  const cardNames = parseComboRarities(cardName);
+  
+  if (cardNames.length === 0) {
+    return { value: 0, details: 'No cards found' };
+  }
+  
+  let totalValue = 0;
+  const details: string[] = [];
+  
+  // Pour chaque carte du combo
+  cardNames.forEach((cardName) => {
+    const cardInfo = getCardInfo(cardName);
+    
+    if (cardInfo) {
+      // Utiliser la rareté de la carte (éviter EXCLUSIVE si possible)
+      const rarity = cardInfo.allRarities.find(r => r !== 'EXCLUSIVE') || cardInfo.rarity;
+      const normalizedRarity = rarityMap[rarity.toLowerCase()] || rarity;
+      
+      // Obtenir la valeur de base
+      const baseValues = BASE_VALUES[foilKey][normalizedRarity as keyof FoilValues];
+      if (baseValues && baseValues.Combo) {
+        const baseValue = baseValues.Combo[grade as keyof typeof baseValues.Combo] || 0;
+        
+        // Appliquer le multiplicateur de la saison de cette carte
+        const multiplier = SEASON_MULTIPLIERS[cardInfo.season as keyof typeof SEASON_MULTIPLIERS]?.[foilKey] || 1;
+        const cardValue = baseValue * multiplier;
+        
+        totalValue += cardValue;
+        details.push(`${cardName}(${cardInfo.season}:${cardValue})`);
+      }
+    }
+  });
+  
+  return { value: totalValue, details: details.join(' + ') };
 }
 
 export function calculateStoneValue(
@@ -141,100 +165,52 @@ export function calculateStoneValue(
   evolution?: string | number,
   cardName?: string
 ): number {
-  // Check if it's an exclusive card (no stones value)
-  if (!advancement || advancement.toLowerCase() === 'exclusive' || advancement.toLowerCase() === 'exclu') {
-    return 0;
-  }
-  
-  // Normalize inputs - handle uppercase values from API
-  const normalizedFaction = (faction || 'Rift').toLowerCase()
-    .replace('arkhante', 'Arkhante')
-    .replace('mantris', 'Mantris')
-    .replace('rift', 'Rift');
-  
-  // Check if it's an exclusive rarity (also no stones value)
-  if (rarity && (rarity.toLowerCase() === 'exclusive' || rarity.toLowerCase() === 'exclu')) {
-    return 0;
-  }
-  
-  // Normalize rarity - API returns UPPERCASE
-  const rarityMap: Record<string, string> = {
-    'common': 'Common',
-    'uncommon': 'Uncommon',
-    'rare': 'Rare',
-    'special rare': 'Special Rare',
-    'specialrare': 'Special Rare',
-    'special_rare': 'Special Rare',
-    'ultra rare': 'Ultra Rare',
-    'ultrarare': 'Ultra Rare',
-    'ultra_rare': 'Ultra Rare',
-    'mythic': 'Mythic'
-  };
-  const normalizedRarity = rarityMap[(rarity || 'Common').toLowerCase()] || 'Common';
-  
-  // Check foil status
-  const isFoil = foil === true || foil === 'true' || foil === 'True' || foil === 'Yes' || foil === 'YES';
+  // Normalize inputs
+  const normalizedFaction = faction || 'RIFT';
+  const normalizedRarity = rarityMap[rarity.toLowerCase()] || rarity;
+  const normalizedAdvancement = advancement.charAt(0).toUpperCase() + advancement.slice(1).toLowerCase();
+  const normalizedGrade = (grade || 'C').toUpperCase();
+  const isFoil = typeof foil === 'string' ? foil.toLowerCase() === 'true' : foil;
   const foilKey = isFoil ? 'Foil' : 'NonFoil';
-  
-  // Normalize advancement - API returns UPPERCASE
-  const advancementMap: Record<string, string> = {
-    'standard': 'Standard',
-    'alternative': 'Alternative',
-    'combo': 'Combo'
-  };
-  const normalizedAdvancement = advancementMap[(advancement || 'Standard').toLowerCase()] || 'Standard';
-  
-  // Normalize grade
-  const normalizedGrade = (grade || 'C').toUpperCase() || 'C';
-  
-  // Get collection values
-  const collectionValues = STONES_VALUES[normalizedFaction] || STONES_VALUES.Rift;
-  
-  // Get rarity values
-  const rarityValues = collectionValues[foilKey][normalizedRarity as keyof FoilValues];
-  if (!rarityValues) {
-    console.warn(`No values found for: ${normalizedFaction}/${foilKey}/${normalizedRarity}`);
+
+  // Check for exclusive combos (no stones value)
+  if (normalizedAdvancement === 'Combo' && cardName) {
+    const isExclusive = EXCLUSIVE_COMBOS.some(combo => 
+      cardName.toLowerCase().includes(combo.toLowerCase())
+    );
+    if (isExclusive) {
+      return 0;
+    }
+  }
+
+  // Get base values
+  const baseValues = BASE_VALUES[foilKey][normalizedRarity as keyof FoilValues];
+  if (!baseValues) {
     return 0;
   }
-  
+
+  let baseValue = 0;
+
   // Calculate based on advancement type
   if (normalizedAdvancement === 'Standard') {
-    // For Standard cards, use rank (1-5) as index
-    // If no evolution/rank provided, use first value
     const rankIndex = evolution ? Math.min(Math.max(Number(evolution) - 1, 0), 4) : 0;
-    const value = rarityValues.Standard[rankIndex] || rarityValues.Standard[0] || 0;
-    return Math.round(value);
+    baseValue = baseValues.Standard[rankIndex] || baseValues.Standard[0] || 0;
   } else if (normalizedAdvancement === 'Alternative') {
-    const advancementValues = rarityValues.Alternative;
-    const value = advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;
-    return Math.round(value);
+    baseValue = baseValues.Alternative[normalizedGrade as keyof typeof baseValues.Alternative] || 0;
   } else if (normalizedAdvancement === 'Combo') {
-    // Pour les combos, calculer la somme des valeurs des cartes composantes
     if (cardName) {
-      const comboRarities = parseComboRarities(cardName);
-      if (comboRarities.length > 0) {
-        let totalValue = 0;
-        
-        // Pour chaque carte du combo, obtenir sa valeur de base
-        for (const comboRarity of comboRarities) {
-          const normalizedComboRarity = rarityMap[comboRarity.toLowerCase()] || comboRarity;
-          const comboRarityValues = collectionValues[foilKey][normalizedComboRarity as keyof FoilValues];
-          if (comboRarityValues && comboRarityValues.Combo) {
-            totalValue += comboRarityValues.Combo[normalizedGrade as keyof typeof comboRarityValues.Combo] || 0;
-          }
-        }
-        
-        return Math.round(totalValue);
-      }
+      // Utiliser la nouvelle logique multi-saisons
+      const comboResult = calculateComboValueMultiSeason(cardName, normalizedGrade, isFoil);
+      return Math.round(comboResult.value);
+    } else {
+      // Fallback
+      baseValue = baseValues.Combo[normalizedGrade as keyof typeof baseValues.Combo] || 0;
     }
-    
-    // Fallback: utiliser la valeur combo de la rareté principale
-    const advancementValues = rarityValues.Combo;
-    const value = advancementValues[normalizedGrade as keyof typeof advancementValues] || 0;
-    return Math.round(value);
   }
-  
-  return 0;
+
+  // Pour non-combo, appliquer le multiplicateur de faction normalement
+  const multiplier = SEASON_MULTIPLIERS[normalizedFaction as keyof typeof SEASON_MULTIPLIERS]?.[foilKey] || 1;
+  return Math.round(baseValue * multiplier);
 }
 
 export function calculateStoneValueWithComment(
@@ -247,56 +223,32 @@ export function calculateStoneValueWithComment(
   cardName?: string
 ): StoneCalculationResult {
   // Check if it's an exclusive card (no stones value)
-  if (!advancement || advancement.toLowerCase() === 'exclusive' || advancement.toLowerCase() === 'exclu') {
-    return { value: 0, comment: 'Carte Exclusive - Pas de valeur stones' };
-  }
-  
-  // Check if it's an exclusive combo
-  if (cardName && EXCLUSIVE_COMBOS.includes(cardName.toLowerCase())) {
-    return { value: 0, comment: 'Combo Exclusive - Pas de valeur stones' };
-  }
-  
-  // Vérifier les valeurs hardcodées pour certains combos SR
-  if (advancement && advancement.toLowerCase() === 'combo' && cardName && grade) {
-    const hardcodedKey = `${cardName.toLowerCase()}|${grade.toLowerCase()}`;
-    if (HARDCODED_COMBO_VALUES[hardcodedKey]) {
-      // Appliquer le multiplicateur de faction aux valeurs hardcodées
-      const baseValue = HARDCODED_COMBO_VALUES[hardcodedKey];
-      const normalizedFaction = (faction || 'Rift').toLowerCase()
-        .replace('arkhante', 'Arkhante')
-        .replace('mantris', 'Mantris')
-        .replace('rift', 'Rift');
-      const isFoil = foil === true || foil === 'true' || foil === 'True' || foil === 'Yes' || foil === 'YES';
-      
-      let multiplier = 1;
-      if (normalizedFaction === 'Mantris') {
-        multiplier = isFoil ? 4 : 2;
-      } else if (normalizedFaction === 'Arkhante') {
-        multiplier = isFoil ? 6 : 3;
-      } else if (isFoil) {
-        multiplier = 2;
+  if (advancement.toLowerCase() === 'combo' && cardName) {
+    const isExclusive = EXCLUSIVE_COMBOS.some(combo => 
+      cardName.toLowerCase().includes(combo.toLowerCase())
+    );
+    if (isExclusive) {
+      return { value: 0, comment: 'Exclusive combo (no stones value)' };
+    }
+
+    // Check for hardcoded SR combo values
+    if (rarity.toLowerCase().includes('special') && grade) {
+      const key = `${cardName.toLowerCase()}|${grade.toLowerCase()}`;
+      const hardcodedValue = HARDCODED_COMBO_VALUES[key];
+      if (hardcodedValue !== undefined) {
+        return { value: hardcodedValue, comment: 'SR combo with hardcoded value' };
       }
-      
-      return {
-        value: Math.round(baseValue * multiplier),
-        comment: 'Combo SR - Valeur stones à vérifier'
-      };
-    }
-    
-    // Vérifier si c'est un combo SR connu
-    const lowerCardName = cardName.toLowerCase();
-    const srCombos = ['sijin', 'riona', 'arkhel', 'aiden pearce & dalton wolfe', 'wrench & auntie shu', 
-                      'greek & voranth & chaka', 'clara lille & dermot "lucky" quinn', 'lancer & knight & tanker',
-                      'wini & galile', 'the wandering triad', 'erika & tiger robot', 'hannibal & honora'];
-    
-    if (srCombos.some(sr => lowerCardName.includes(sr))) {
-      // Calcul normal mais avec commentaire
-      const value = calculateStoneValue(faction, rarity, foil, advancement, grade, evolution, cardName);
-      return { value, comment: 'Combo SR - Valeur stones à vérifier' };
     }
   }
-  
-  // Sinon, utiliser le calcul normal
+
   const value = calculateStoneValue(faction, rarity, foil, advancement, grade, evolution, cardName);
-  return { value, comment: undefined };
+  
+  let comment = '';
+  if (advancement.toLowerCase() === 'combo' && cardName) {
+    const isFoil = typeof foil === 'string' ? foil.toLowerCase() === 'true' : foil;
+    const comboResult = calculateComboValueMultiSeason(cardName, grade || 'C', isFoil);
+    comment = `Combo: ${comboResult.details}`;
+  }
+
+  return { value, comment };
 }
