@@ -1,4 +1,4 @@
-import { parseComboRarities, EXCLUSIVE_COMBOS, HARDCODED_COMBO_VALUES } from './knownCards';
+import { EXCLUSIVE_COMBOS, HARDCODED_COMBO_VALUES } from './knownCards';
 import { getCardInfo } from './cardDatabase';
 
 interface RarityValues {
@@ -120,7 +120,21 @@ function calculateComboValueMultiSeason(
   isFoil: boolean
 ): { value: number; details: string } {
   const foilKey = isFoil ? 'Foil' : 'NonFoil';
-  const cardNames = parseComboRarities(cardName);
+  // Parser les noms de cartes du combo
+  let cardNames: string[] = [];
+  
+  // Vérifier les cas spéciaux d'abord
+  const specialCombos: Record<string, string[]> = {
+    'sassaki & his disciples': ['sassaki', 'valred', 'ruby', 'hanzo', 'ronan'],
+    'division 0': ['judith', 'seifer', 'hilde', 'b380'],
+  };
+  
+  const lowerCardName = cardName.toLowerCase();
+  if (specialCombos[lowerCardName]) {
+    cardNames = specialCombos[lowerCardName];
+  } else if (cardName.includes(' & ')) {
+    cardNames = cardName.split(' & ').map(name => name.trim().toLowerCase());
+  }
   
   if (cardNames.length === 0) {
     return { value: 0, details: 'No cards found' };
@@ -130,8 +144,8 @@ function calculateComboValueMultiSeason(
   const details: string[] = [];
   
   // Pour chaque carte du combo
-  cardNames.forEach((cardName) => {
-    const cardInfo = getCardInfo(cardName);
+  cardNames.forEach((singleCardName) => {
+    const cardInfo = getCardInfo(singleCardName);
     
     if (cardInfo) {
       // Utiliser la rareté de la carte (éviter EXCLUSIVE si possible)
@@ -148,7 +162,7 @@ function calculateComboValueMultiSeason(
         const cardValue = baseValue * multiplier;
         
         totalValue += cardValue;
-        details.push(`${cardName}(${cardInfo.season}:${cardValue})`);
+        details.push(`${singleCardName}(${cardInfo.season}:${cardValue})`);
       }
     }
   });
