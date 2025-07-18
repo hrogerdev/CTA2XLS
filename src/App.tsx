@@ -5,7 +5,7 @@ import { FakeAdPlaceholder } from './components/FakeAdPlaceholder'
 import { ProcessingAnimation } from './components/ProcessingAnimation'
 import { useImxNfts } from './hooks/useImxNfts'
 import * as XLSX from 'xlsx'
-import { calculateStoneValue, calculateStoneValueWithComment } from './utils/stonesValues'
+import { calculateStoneValueWithComment } from './utils/stonesValues'
 
 function getMetadataValue(metadata: any, key: string): string {
   if (!metadata) return 'N/A'
