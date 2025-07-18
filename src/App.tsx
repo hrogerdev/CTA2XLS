@@ -6,6 +6,7 @@ import { ProcessingAnimation } from './components/ProcessingAnimation'
 import { useImxNfts } from './hooks/useImxNfts'
 import * as XLSX from 'xlsx'
 import { calculateStoneValueWithComment } from './utils/stonesValues'
+import { EXCLUSIVE_COMBOS } from './utils/knownCards'
 
 function getMetadataValue(metadata: any, key: string): string {
   if (!metadata) return 'N/A'
@@ -71,7 +72,8 @@ export default function App() {
     }
   }
 
-  // Calculate total stones
+  // Calculate total stones and count exclusives
+  let exclusiveCount = 0;
   const totalStones = nfts.reduce((total, nft) => {
     const stoneResult = calculateStoneValueWithComment(
       getMetadataValue(nft.metadata, 'faction'),
@@ -82,6 +84,12 @@ export default function App() {
       getMetadataValue(nft.metadata, 'rank') || getMetadataValue(nft.metadata, 'evolution'),
       nft.name
     );
+    
+    // Check if it's an exclusive combo
+    if (nft.name && EXCLUSIVE_COMBOS.some(combo => nft.name.toLowerCase().includes(combo.toLowerCase()))) {
+      exclusiveCount++;
+    }
+    
     return total + stoneResult.value;
   }, 0);
 
@@ -134,14 +142,46 @@ export default function App() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Cross The Ages NFTs');
     
-    // Add summary sheet
-    const summary = XLSX.utils.json_to_sheet([{
-      'Total NFTs': nfts.length,
-      'Valeur Totale en Stones': totalStones,
-      'Adresse Wallet': walletAddress,
-      'Date de Génération': new Date().toLocaleString('fr-FR'),
-      'Rappel à la réalité': 'Ce ne sont toujours que des JPEGs'
-    }]);
+    // Count NFTs by rarity
+    const rarityCount: Record<string, number> = {};
+    data.forEach(row => {
+      const rarity = row.Rarity || 'N/A';
+      rarityCount[rarity] = (rarityCount[rarity] || 0) + 1;
+    });
+    
+    // Create rarity table
+    const rarityData = Object.entries(rarityCount)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([rarity, count]) => ({
+        'Rareté': rarity,
+        'Quantité': count
+      }));
+    
+    // Create valuation table
+    const valuationData = [];
+    for (let price = 0.060; price >= 0.012; price -= 0.005) {
+      valuationData.push({
+        'Prix Stone ($)': price.toFixed(3),
+        'Valeur Portefeuille ($)': (totalStones * price).toFixed(2)
+      });
+    }
+    
+    // Add summary sheet with multiple sections
+    const summaryData = [
+      { 'Total NFTs': nfts.length },
+      { 'Valeur Totale en Stones': totalStones },
+      { 'Adresse Wallet': walletAddress },
+      { 'Date de Génération': new Date().toLocaleString('fr-FR') },
+      { 'Rappel à la réalité': 'Ce ne sont toujours que des JPEGs' },
+      {}, // Empty row
+      { 'RÉPARTITION PAR RARETÉ': '' },
+      ...rarityData,
+      {}, // Empty row
+      { 'VALORISATION DU PORTEFEUILLE': '' },
+      ...valuationData
+    ];
+    
+    const summary = XLSX.utils.json_to_sheet(summaryData);
     XLSX.utils.book_append_sheet(wb, summary, 'Résumé');
     
     const fileName = `cta-nfts-${walletAddress?.slice(0, 8)}-${new Date().toISOString().split('T')[0]}.xlsx`;
