@@ -126,7 +126,7 @@ export default function App() {
     const rarityData = Object.entries(rarityCount)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([rarity, count]) => ({
-        'Rareté': rarity,
+        'Rareté': rarity === 'N/A' ? 'mintpass et autres merdes' : rarity,
         'Quantité': count
       }));
     
