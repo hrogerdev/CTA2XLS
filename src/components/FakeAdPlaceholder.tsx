@@ -608,10 +608,10 @@ function RecruitmentStudio() {
             <div className="bg-white/10 backdrop-blur rounded-lg p-4">
               <h3 className="font-bold text-xl mb-2">Profil recherché :</h3>
               <ul className="space-y-1 text-sm">
-                <li>• Dev senior avec 10 ans d'XP sur React 19</li>
-                <li>• Tu connais les design patterns ? C'est quoi ?</li>
-                <li>• Git rebase interactif = sport extrême</li>
-                <li>• Documentation allergique acceptée</li>
+                <li>• Tu confonds Java et JavaScript ? Parfait !</li>
+                <li>• Tu sais casser un site en 2 clics ? On te veut !</li>
+                <li>• "Ça marchait hier"</li>
+                <li>• Les utilisateurs sont tes beta testeurs</li>
               </ul>
             </div>
             
@@ -619,19 +619,16 @@ function RecruitmentStudio() {
               <h3 className="font-bold text-xl mb-2">Avantages :</h3>
               <ul className="space-y-1 text-sm">
                 <li>• Salaire en NFTs CTA (valeur variable)</li>
-                <li>• Machine à café en panne depuis 2019</li>
-                <li>• Baby-foot avec 3 joueurs sur 8</li>
-                <li>• Crunch permanent = esprit de famille</li>
+                <li>• Offert : uniforme de travail collector à deux manches gauches pour les bras cassés</li>
               </ul>
             </div>
             
             <div className="bg-white/10 backdrop-blur rounded-lg p-4">
               <h3 className="font-bold text-xl mb-2">Process de recrutement :</h3>
               <ul className="space-y-1 text-sm">
-                <li>• 1 test technique de 48h non payé</li>
-                <li>• 3 entretiens + 1 battle de push-ups</li>
-                <li>• QI test + test de personnalité astrologique</li>
-                <li>• Diplôme facultatif si tu viens des quartiers</li>
+                <li>• Diplôme facultatif</li>
+                <li>• Parler le dialecte des quartiers nord serait un plus</li>
+                <li>• Test psychologique pour vérifier ta "réceptivité aux enseignements du grand guru tech"</li>
               </ul>
             </div>
           </div>
@@ -690,30 +687,189 @@ function RecruitmentStudio() {
             REJOINS SOON STUDIO
           </motion.h3>
           
-          <p className="text-xl mb-4 font-bold text-pink-300">
+          <p className="text-xl mb-6 font-bold text-pink-300">
             On recrute des devs qui shipent dans le noir 🌙
           </p>
           
-          <div className="bg-white/20 backdrop-blur rounded-lg p-4 mb-4">
-            <p className="text-lg font-bold mb-2">Points bonus si :</p>
-            <ul className="text-left space-y-1">
-              <li>✅ Tu push en prod le vendredi soir</li>
-              <li>✅ "Ça marche sur ma machine" = ta devise</li>
-              <li>✅ Quartiers Nord = +50 points street cred</li>
-              <li>✅ Tests ? On verra plus tard...</li>
-            </ul>
+          <div className="bg-white/20 backdrop-blur rounded-lg p-6">
+            <p className="text-2xl font-bold">POSTULEZ MAINTENANT</p>
+            <p className="text-lg mt-2">Et découvrez le poste de vos rêves</p>
+            <p className="text-sm mt-1 opacity-70">(ou pas)</p>
           </div>
           
           <motion.div
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 1, repeat: Infinity }}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold px-8 py-3 rounded-full inline-block"
+            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold px-8 py-3 rounded-full inline-block shadow-lg"
           >
             POSTULER MAINTENANT
           </motion.div>
           
           <p className="text-xs mt-4 text-gray-300">
             *Stage non rémunéré avec possibilité d'embauche (peut-être)
+          </p>
+        </div>
+      </motion.div>
+    </aside>
+  )
+}
+
+function BlockchainAnnouncement() {
+  const [showForm, setShowForm] = useState(false)
+  const [showThankYou, setShowThankYou] = useState(false)
+  const [selectedChain, setSelectedChain] = useState('')
+  const [reason, setReason] = useState('')
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setShowThankYou(true)
+  }
+  
+  if (showThankYou) {
+    return (
+      <aside id="fake-ad-blockchain" className="max-w-[480px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, scale: 1.2 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gradient-to-br from-green-900 to-green-700 rounded-lg p-8 text-white text-center"
+        >
+          <div className="text-6xl mb-4">✅</div>
+          <h2 className="text-2xl font-bold mb-4">Merci pour votre suggestion !</h2>
+          <p className="text-lg mb-2">L'avis de la communauté compte énormément pour nous.</p>
+          <p className="text-sm italic">C'est pourquoi votre message a été automatiquement supprimé et ne sera jamais lu.</p>
+          <button
+            onClick={() => {
+              setShowThankYou(false)
+              setShowForm(false)
+              setSelectedChain('')
+              setReason('')
+            }}
+            className="mt-6 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg transition-colors"
+          >
+            Fermer
+          </button>
+        </motion.div>
+      </aside>
+    )
+  }
+  
+  if (showForm) {
+    return (
+      <aside id="fake-ad-blockchain" className="max-w-[480px] mx-auto my-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-purple-900 via-blue-900 to-pink-900 rounded-lg p-6 text-white"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-center">🎯 SUGGÉREZ LA PROCHAINE BLOCKCHAIN</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-bold mb-2">Votre suggestion :</label>
+              <select 
+                value={selectedChain}
+                onChange={(e) => setSelectedChain(e.target.value)}
+                className="w-full p-3 rounded bg-white/20 backdrop-blur text-white placeholder-gray-300"
+                required
+              >
+                <option value="">-- Choisissez une blockchain --</option>
+                <option value="cardano">Cardano (pour les intellectuels)</option>
+                <option value="tron">Tron (Justin Sun nous paiera)</option>
+                <option value="eos">EOS (nostalgique de 2018)</option>
+                <option value="near">NEAR (on sait pas ce que c'est)</option>
+                <option value="sui">Sui (c'est nouveau donc c'est bien)</option>
+                <option value="aptos">Aptos (pareil que Sui)</option>
+                <option value="hype">HYPE : le turfu!</option>
+                <option value="excel">Excel (finalement c'était mieux)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-bold mb-2">Pourquoi cette blockchain ?</label>
+              <textarea 
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Expliquez en 500 mots pourquoi on devrait perdre 6 mois à migrer..."
+                className="w-full p-3 rounded bg-white/20 backdrop-blur text-white placeholder-gray-300 h-32"
+                required
+              />
+            </div>
+            
+            <div className="bg-yellow-500/20 backdrop-blur rounded p-3 text-sm">
+              <p>⚠️ Note : Votre avis sera soigneusement ignoré</p>
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 rounded-lg transition-all"
+              >
+                ENVOYER MA SUGGESTION
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </aside>
+    )
+  }
+  
+  return (
+    <aside id="fake-ad-blockchain" className="max-w-[480px] mx-auto my-8">
+      <motion.div 
+        className="bg-gradient-to-br from-black via-purple-900 to-blue-900 rounded-lg p-6 cursor-pointer relative overflow-hidden"
+        whileHover={{ scale: 1.02 }}
+        onClick={() => setShowForm(true)}
+      >
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-circuit-pattern"></div>
+        </div>
+        
+        <div className="relative z-10 text-white text-center">
+          <motion.h3 
+            className="text-3xl font-bold mb-4"
+            animate={{ 
+              color: ['#fff', '#ffeb3b', '#fff']
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            APPEL À CANDIDATURES
+          </motion.h3>
+          
+          <p className="text-lg mb-4">
+            Entreprise de prêt-à-porter innovante cherche, suite à son très prochain déploiement sur Solana...
+          </p>
+          
+          <div className="bg-white/20 backdrop-blur rounded-lg p-6 mb-4">
+            <motion.p 
+              className="text-2xl font-bold text-yellow-400"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              LA BLOCKCHAIN SUIVANTE ! 🎪
+            </motion.p>
+            
+            <p className="text-sm mt-4 opacity-80 italic">
+              On suit la tendance, toujours en retard mais avec conviction
+            </p>
+          </div>
+          
+          <motion.div
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold px-8 py-4 rounded-full inline-block text-lg"
+          >
+            SUGGÉRER UNE BLOCKCHAIN
+          </motion.div>
+          
+          <p className="text-xs mt-4 text-gray-400 italic">
+            *La communauté décide (mais on fera ce qu'on veut)
           </p>
         </div>
       </motion.div>
@@ -729,7 +885,8 @@ export function FakeAdPlaceholder({ type }: { type?: string }) {
     marabout: GrandMarabout,
     video: VideoEditingScam,
     elpatron: ElPatronVideo,
-    recruitment: RecruitmentStudio
+    recruitment: RecruitmentStudio,
+    blockchain: BlockchainAnnouncement
   }
   
   if (type && ads[type as keyof typeof ads]) {

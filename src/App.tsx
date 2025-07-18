@@ -34,16 +34,7 @@ export default function App() {
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
-  const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron', 'recruitment']
-  
-  // Auto-rotate carousel every 2 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentAdIndex((prev) => (prev + 1) % adTypes.length)
-    }, 2000)
-    
-    return () => clearInterval(interval)
-  }, [adTypes.length])
+  const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron', 'recruitment', 'blockchain']
   
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50
