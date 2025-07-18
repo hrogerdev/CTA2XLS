@@ -86,7 +86,7 @@ export default function App() {
     );
     
     // Check if it's an exclusive combo
-    if (nft.name && EXCLUSIVE_COMBOS.some(combo => nft.name.toLowerCase().includes(combo.toLowerCase()))) {
+    if (nft.name && EXCLUSIVE_COMBOS.some(combo => nft.name!.toLowerCase().includes(combo.toLowerCase()))) {
       exclusiveCount++;
     }
     
