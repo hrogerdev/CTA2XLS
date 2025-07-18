@@ -31,7 +31,7 @@ export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showProcessing, setShowProcessing] = useState(false)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
-  const [excelGeneratedCount, setExcelGeneratedCount] = useState(64)
+  const [excelGeneratedCount, setExcelGeneratedCount] = useState(68)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
@@ -43,13 +43,13 @@ export default function App() {
         const response = await fetch('https://api.counterapi.dev/v1/cta-to-xls/excel-counter')
         const data = await response.json()
         if (data.count !== undefined) {
-          setExcelGeneratedCount(data.count + 64) // Ajouter les 64 initiaux
+          setExcelGeneratedCount(data.count)
         }
       } catch (error) {
         console.error('Error fetching counter:', error)
         // Utiliser localStorage en fallback
         const localCount = localStorage.getItem('cta-xls-count')
-        setExcelGeneratedCount(localCount ? parseInt(localCount) : 64)
+        setExcelGeneratedCount(localCount ? parseInt(localCount) : 68)
       }
     }
     
@@ -171,7 +171,7 @@ export default function App() {
       .then(res => res.json())
       .then(data => {
         if (data.count !== undefined) {
-          setExcelGeneratedCount(data.count + 64);
+          setExcelGeneratedCount(data.count);
         }
       })
       .catch(() => {

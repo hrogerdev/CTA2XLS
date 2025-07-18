@@ -3,7 +3,7 @@ import { ImxNft, ImxApiResponse, UseImxNftsReturn } from '../types'
 
 const CTA_CONTRACT_ADDRESS = '0xa04bcac09a3ca810796c9e3deee8fdc8c9807166'
 const IMX_API_BASE_URL = 'https://api.x.immutable.com/v1'
-const PAGE_SIZE = 50
+const PAGE_SIZE = 200
 
 async function sendTelegramNotification(message: string) {
   const botToken = '8120868002:AAF6HnNzmPy-YZ6YjOTkVuu4L5lBdvCq6mw'
