@@ -32,36 +32,9 @@ export default function App() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showProcessing, setShowProcessing] = useState(false)
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
-  const [excelGeneratedCount, setExcelGeneratedCount] = useState(68)
   const { nfts, loading, error } = useImxNfts(walletAddress)
   
   const adTypes = ['windshield', 'landdrop', 'penimaxi', 'marabout', 'video', 'elpatron']
-  
-  // Load and refresh global excel count
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const response = await fetch('https://api.counterapi.dev/v1/cta-to-xls/excel-counter')
-        const data = await response.json()
-        if (data.count !== undefined) {
-          setExcelGeneratedCount(data.count)
-        }
-      } catch (error) {
-        console.error('Error fetching counter:', error)
-        // Utiliser localStorage en fallback
-        const localCount = localStorage.getItem('cta-xls-count')
-        setExcelGeneratedCount(localCount ? parseInt(localCount) : 68)
-      }
-    }
-    
-    // Charger au démarrage
-    fetchCount()
-    
-    // Actualiser toutes les 30 secondes
-    const interval = setInterval(fetchCount, 30000)
-    
-    return () => clearInterval(interval)
-  }, [])
   
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50
@@ -159,7 +132,15 @@ export default function App() {
     
     // Create valuation table
     const valuationData = [];
-    for (let price = 0.060; price >= 0.012; price -= 0.005) {
+    
+    // Prix spécial à 0.06 avec "LOOL"
+    valuationData.push({
+      'Prix Stone ($)': '0,060 LOOL',
+      'Valeur Portefeuille ($)': (totalStones * 0.060).toFixed(2)
+    });
+    
+    // De 0.025 à 0.012 par pas de 0.001
+    for (let price = 0.025; price >= 0.012; price -= 0.001) {
       valuationData.push({
         'Prix Stone ($)': price.toFixed(3),
         'Valeur Portefeuille ($)': (totalStones * price).toFixed(2)
@@ -277,23 +258,6 @@ export default function App() {
       URL.revokeObjectURL(url);
     }, 100);
     
-    // Increment global Excel count
-    fetch('https://api.counterapi.dev/v1/cta-to-xls/excel-counter/up', {
-      method: 'GET'
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.count !== undefined) {
-          setExcelGeneratedCount(data.count);
-        }
-      })
-      .catch(() => {
-        // En cas d'erreur, incrémenter localement et sauvegarder
-        const newCount = excelGeneratedCount + 1;
-        setExcelGeneratedCount(newCount);
-        localStorage.setItem('cta-xls-count', newCount.toString());
-      });
-    
     setShowProcessing(false);
     setWalletAddress(null);
   };
@@ -316,19 +280,8 @@ export default function App() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12 relative"
+          className="text-center mb-12"
         >
-          {/* Compteur discret en haut à droite */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="absolute top-0 right-0 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg shadow-sm flex items-center gap-2"
-          >
-            <p className="text-2xl font-semibold">{excelGeneratedCount.toLocaleString('fr-FR')}</p>
-            <p className="text-sm text-gray-500">Excel générés</p>
-          </motion.div>
-          
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             CTA to XLS 🚀
           </h1>
@@ -454,19 +407,6 @@ export default function App() {
       </div>
 
       {/* Footer avec messages selon le nombre */}
-      <motion.footer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="text-center py-8 text-gray-500"
-      >
-        <p className="text-xs">
-          {excelGeneratedCount > 50 && "📊 Plus de 50 fichiers Excel ! Les tableurs sont nos amis..."}
-          {excelGeneratedCount > 100 && " 🏆 Plus de 100 ! Vous êtes officiellement accros aux tableaux..."}
-          {excelGeneratedCount > 250 && " 🔥 Plus de 250 ! Excel devrait vous sponsoriser..."}
-          {excelGeneratedCount > 500 && " 🚀 Plus de 500 ! À ce stade, c'est une religion..."}
-        </p>
-      </motion.footer>
 
     </div>
   )
