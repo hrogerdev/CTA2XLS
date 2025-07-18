@@ -156,7 +156,7 @@ export default function App() {
       [],
       [],
       // Rarity table header at A5
-      ['RÉPARTITION PAR RARETÉ', '', '', '', 'VALORISATION DU PORTEFEUILLE'],
+      ['RÉPARTITION PAR RARETÉ', '', '', '', 'VALORISATION DES STONES DU PORTEFEUILLE'],
       ['Rareté', 'Quantité', '', '', 'Prix Stone ($)', 'Valeur Portefeuille ($)']
     ]);
     
