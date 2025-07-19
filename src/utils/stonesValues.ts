@@ -273,7 +273,12 @@ export function calculateStoneValueWithComment(
       const key = `${cardName.toLowerCase()}|${grade.toLowerCase()}`;
       const hardcodedValue = HARDCODED_COMBO_VALUES[key];
       if (hardcodedValue !== undefined) {
-        return { value: hardcodedValue, comment: 'SR combo with hardcoded value' };
+        // Les valeurs hardcodées sont des valeurs finales non-foil
+        // Appliquer seulement le multiplicateur foil
+        const isFoil = typeof foil === 'string' ? foil.toLowerCase() === 'true' : foil;
+        const foilMultiplier = isFoil ? 2 : 1;
+        const finalValue = hardcodedValue * foilMultiplier;
+        return { value: Math.round(finalValue), comment: 'SR combo with hardcoded value' };
       }
     }
   }
