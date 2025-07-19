@@ -127,6 +127,14 @@ function calculateComboValueMultiSeason(
   const specialCombos: Record<string, string[]> = {
     'sassaki & his disciples': ['sassaki', 'valred', 'ruby', 'hanzo', 'ronan'],
     'division 0': ['judith', 'seifer', 'hilde', 'b380'],
+    'division o': ['judith', 'seifer', 'hilde', 'b380'], // Division O avec la lettre O
+    'ezio & sathyne': ['the ordonator', 'sathyne'],
+    'arkhel': ['zia', 'gaumry', 'lyle', 'marcus', 'bly', 'laurie', 'archer', 'oji', 'lo', 'kassius', 'alokah', 'monkigh', 'oak'],
+    'riona': ['division vii', 'terak', 'lynn', 'psychard', 'raven', 'seelung', 'sit', 'souleiman', 'drone', 'criarunes', 'class i utility drone', 'jackie', 'mantrix council'],
+    'sijin': ['the no', 'ricred', 'lylini', 'chaka', 'taki', 'arijuna', 'nyvenn', 'galile', 'bou', 'kahi & khennan', 'phosphene', 'sollale', 'garth'],
+    'robotic chimera': ['dog robot', 'tiger robot', 'cyber-scorpion', 'meca bird'],
+    'zanger restoration': ['zanger serie', 'class iii utility robot'],
+    'the wandering triad': ['skar', 'sylphio', 'diane']
   };
   
   const lowerCardName = cardName.toLowerCase();
