@@ -194,7 +194,7 @@ export const HARDCODED_COMBO_VALUES: Record<string, number> = {
   'sijin|s': 4243,
   
   // Arkhel (ARKHANTE) 
-  'arkhel|c': 2139,
+  'arkhel|c': 1976,
   'arkhel|b': 4368,
   'arkhel|a': 7956,
   'arkhel|s': 12729
