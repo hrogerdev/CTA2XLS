@@ -148,14 +148,13 @@ function calculateComboValueMultiSeason(
     const cardInfo = getCardInfo(singleCardName);
     
     if (cardInfo) {
-      // Si la carte a EXCLUSIVE dans ses raretés, elle vaut 0 stones
-      if (cardInfo.allRarities.includes('EXCLUSIVE')) {
-        details.push(`${singleCardName}(EXCLUSIVE:0)`);
-        return; // Passer à la carte suivante
+      // Dans les combos, ignorer complètement EXCLUSIVE pour les cartes individuelles
+      // Utiliser la première rareté non-EXCLUSIVE
+      let rarity = cardInfo.rarity;
+      if (rarity === 'EXCLUSIVE' && cardInfo.allRarities.length > 1) {
+        rarity = cardInfo.allRarities.find(r => r !== 'EXCLUSIVE') || cardInfo.rarity;
       }
       
-      // Utiliser la rareté de la carte
-      const rarity = cardInfo.rarity;
       const normalizedRarity = rarityMap[rarity.toLowerCase()] || rarity;
       
       // Obtenir la valeur de base
