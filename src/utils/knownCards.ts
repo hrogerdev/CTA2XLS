@@ -191,7 +191,13 @@ export const HARDCODED_COMBO_VALUES: Record<string, number> = {
   'sijin|c': 713,
   'sijin|b': 1456,
   'sijin|a': 2652,
-  'sijin|s': 4243
+  'sijin|s': 4243,
+  
+  // Arkhel (ARKHANTE) 
+  'arkhel|c': 2139,
+  'arkhel|b': 4368,
+  'arkhel|a': 7956,
+  'arkhel|s': 12729
 };
 
 export function getCardRarity(cardName: string): string | null {
