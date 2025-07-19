@@ -104,8 +104,8 @@ const rarityMap: Record<string, string> = {
   special_rare: 'Special Rare',
   'ultra rare': 'Ultra Rare',
   ultra_rare: 'Ultra Rare',
-  mythic: 'Mythic',
-  exclusive: 'Mythic' // Traiter EXCLUSIVE comme MYTHIC pour les valeurs
+  mythic: 'Mythic'
+  // EXCLUSIVE cards have 0 stones value
 };
 
 interface StoneCalculationResult {
@@ -148,8 +148,14 @@ function calculateComboValueMultiSeason(
     const cardInfo = getCardInfo(singleCardName);
     
     if (cardInfo) {
-      // Utiliser la rareté de la carte (éviter EXCLUSIVE si possible)
-      const rarity = cardInfo.allRarities.find(r => r !== 'EXCLUSIVE') || cardInfo.rarity;
+      // Si la carte a EXCLUSIVE dans ses raretés, elle vaut 0 stones
+      if (cardInfo.allRarities.includes('EXCLUSIVE')) {
+        details.push(`${singleCardName}(EXCLUSIVE:0)`);
+        return; // Passer à la carte suivante
+      }
+      
+      // Utiliser la rareté de la carte
+      const rarity = cardInfo.rarity;
       const normalizedRarity = rarityMap[rarity.toLowerCase()] || rarity;
       
       // Obtenir la valeur de base
