@@ -170,8 +170,11 @@ export const EXCLUSIVE_COMBOS = [
 export const HARDCODED_COMBO_VALUES: Record<string, number> = {
   // Format: "nom_combo|grade" -> valeur
   'hannibal & honora|c': 304,
+  'hannibal & honora|b': 670,
   'erika & tiger robot|c': 202,
-  'wini & galile|c': 102
+  'wini & galile|c': 102,
+  'sijin|a': 2652,
+  'sijin|b': 1456
 };
 
 export function getCardRarity(cardName: string): string | null {

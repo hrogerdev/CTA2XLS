@@ -268,8 +268,8 @@ export function calculateStoneValueWithComment(
       return { value: 0, comment: 'Exclusive combo (no stones value)' };
     }
 
-    // Check for hardcoded SR combo values
-    if (rarity.toLowerCase().includes('special') && grade) {
+    // Check for hardcoded combo values
+    if (grade) {
       const key = `${cardName.toLowerCase()}|${grade.toLowerCase()}`;
       const hardcodedValue = HARDCODED_COMBO_VALUES[key];
       if (hardcodedValue !== undefined) {
@@ -278,7 +278,7 @@ export function calculateStoneValueWithComment(
         const isFoil = typeof foil === 'string' ? foil.toLowerCase() === 'true' : foil;
         const foilMultiplier = isFoil ? 2 : 1;
         const finalValue = hardcodedValue * foilMultiplier;
-        return { value: Math.round(finalValue), comment: 'SR combo with hardcoded value' };
+        return { value: Math.round(finalValue), comment: 'Combo with hardcoded value' };
       }
     }
   }
