@@ -179,6 +179,11 @@ export function calculateStoneValue(
   evolution?: string | number,
   cardName?: string
 ): number {
+  // Check if it's an EXCLUSIVE rarity card (no stones value)
+  if (rarity.toUpperCase() === 'EXCLUSIVE') {
+    return 0;
+  }
+
   // Normalize inputs
   const normalizedFaction = faction || 'RIFT';
   const normalizedRarity = rarityMap[rarity.toLowerCase()] || rarity;
@@ -236,6 +241,11 @@ export function calculateStoneValueWithComment(
   evolution?: string | number,
   cardName?: string
 ): StoneCalculationResult {
+  // Check if it's an EXCLUSIVE rarity card (no stones value)
+  if (rarity.toUpperCase() === 'EXCLUSIVE') {
+    return { value: 0, comment: 'Exclusive rarity (no stones value)' };
+  }
+
   // Check if it's an exclusive card (no stones value)
   if (advancement.toLowerCase() === 'combo' && cardName) {
     const isExclusive = EXCLUSIVE_COMBOS.some(combo => 
