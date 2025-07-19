@@ -123,7 +123,7 @@ export const KNOWN_CARDS: Record<string, string> = {
   'lylini': 'SPECIAL RARE',
   'chaka': 'SPECIAL RARE',
   'taki': 'SPECIAL RARE',
-  'arijuna': 'SPECIAL RARE',
+  'arjjuna': 'SPECIAL RARE',
   'nyvenn': 'SPECIAL RARE',
   'galile': 'SPECIAL RARE',
   'bou': 'SPECIAL RARE',
@@ -152,7 +152,7 @@ export const SPECIAL_COMBO_NAMES: Record<string, string[]> = {
   // Combos SR (13 cartes chacun)
   'arkhel': ['zia', 'gaumry', 'lyle', 'marcus', 'bly', 'laurie', 'archer', 'oji', 'lo', 'kassius', 'alokah', 'monkigh', 'oak'],
   'riona': ['division vii', 'terak', 'lynn', 'psychard', 'raven', 'seelung', 'sit', 'souleiman', 'drone', 'criarunes', 'class i utility drone', 'jackie', 'mantrix council'],
-  'sijin': ['the no', 'ricred', 'lylini', 'chaka', 'taki', 'arijuna', 'nyvenn', 'galile', 'bou', 'kahi & khennan', 'phosphene', 'sollale', 'garth'],
+  'sijin': ['the no', 'ricred', 'lylini', 'chaka', 'taki', 'arjjuna', 'nyvenn', 'galile', 'bou', 'kahi & khennan', 'phosphene', 'sollale', 'garth'],
   // Autres combos spéciaux qui ne suivent pas le format A & B
   'robotic chimera': ['dog robot', 'tiger robot', 'cyber-scorpion', 'meca bird'],
   'zanger restoration': ['zanger serie', 'class iii utility robot'],
