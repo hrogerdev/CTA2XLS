@@ -169,12 +169,29 @@ export const EXCLUSIVE_COMBOS = [
 // Valeurs hardcodées pour certains combos SR qui ne suivent pas la logique
 export const HARDCODED_COMBO_VALUES: Record<string, number> = {
   // Format: "nom_combo|grade" -> valeur
+  // Hannibal & Honora
   'hannibal & honora|c': 304,
   'hannibal & honora|b': 670,
+  'hannibal & honora|a': 1220,
+  'hannibal & honora|s': 1950,
+  
+  // Erika & Tiger Robot
   'erika & tiger robot|c': 202,
+  'erika & tiger robot|b': 445,
+  'erika & tiger robot|a': 810,
+  'erika & tiger robot|s': 1296,
+  
+  // Wini & Galile
   'wini & galile|c': 102,
+  'wini & galile|b': 224,
+  'wini & galile|a': 408,
+  'wini & galile|s': 653,
+  
+  // Sijin (RIFT)
+  'sijin|c': 713,
+  'sijin|b': 1456,
   'sijin|a': 2652,
-  'sijin|b': 1456
+  'sijin|s': 4243
 };
 
 export function getCardRarity(cardName: string): string | null {
